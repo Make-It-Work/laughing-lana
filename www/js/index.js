@@ -94,12 +94,13 @@ $(document).ready( function() {
     });
 });
 
-$(document).ready(function(){
+$(document).on("pagebeforeshow","#all-races", function(){
     alert('show');
     $.ajax({
         url:'http://127.0.0.1:8080/race',
         type:'GET',
         success: function(result) {
+            alert("something");
             alert(result);
         },
         error: function(request, status, error) {
