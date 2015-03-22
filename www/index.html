@@ -30,12 +30,22 @@
         <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
         <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
         <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+        <script src="/js/index.js"></script>
         <title>Kroegen race</title>
     </head>
     <body>
         <div data-role="page" id="index">
-            <div data-role="header" style="text-align: center; height: 40px; font-size: 28px;">Kroegen race</div>
-            <div role="main" class="ui-content">
+            <div data-role="panel" id="menupanel">
+                <a>Current race </a> <br/>
+                <a>Owned races </a> <br/>
+                <a>Joined races </a> <br/>
+                <a href="#all-races">Find race </a> <br/>
+            </div>
+            <div data-role="header">
+                <a href="#menupanel" class="ui-btn ui-icon-bars ui-btn-icon-left">Menu </a>
+                <span style="text-align: center; font-size: 28px; float: right;">Kroegen race </span>
+            </div>
+            <div role="main" class="ui-content" style="clear:both">
                 <div>
                     <button>Add race</button>
                     <input type="search" name="search" id="search-basic" value="" placeholder="Zoek een race"/>
@@ -99,6 +109,32 @@
             </div><!-- /footer -->
         </div> <!-- /page -->
 
+        <div data-role="page" id="all-races">
+            <div data-role="header">
+                <span style="text-align: center; font-size: 28px; float: right;">Kroegen race </span>
+            </div>
+            <div role="main" class="ui-content" style="clear:both">
+                <div>
+                    <button>Add race</button>
+                    <input type="search" name="search" id="search-basic" value="" placeholder="Zoek een race"/>
+                </div>
+                <br/>
+                <ul data-role="listview">
+                    <li>
+                        <a href="#race-detail">
+                            <img src="icon.png" />
+                            <h1 id="title">Race Supersweet</h1>
+                            <h3 id="description"> This is a supersweet race for awesome people </h3>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div data-role="footer" data-position="fixed" data-tap-toggle="false" class="jqm-footer" style="text-align: center">
+                <p>Suzanne Jenniskens en Suzanne van Hees</p>
+            </div><!-- /footer -->
+        </div><!-- /page -->
+
+
         <div data-role="page" id="race-detail">
             <div data-role="header" style="text-align: center;">Kroegen race</div>
             <div role="main" class="ui-content">
@@ -111,14 +147,15 @@
                     </div>
                     <div id="one" class="ui-content">
                         <p> Swipe left and right to see other activities </p>
-                        <div id="activity-image" style="width: 100%">
-                            <img src="http://placehold.it/800x600" style="width: 100%"/>
-                        </div>
-                        <div id="activity-info">
-                            <h1> Kroegnaam </h1>
-                            <h2> Onderwijsboulevard 103, Den Bosch </h2>
-                            <h3> 20:00 - 21:00 </h3>
-                            <p>Dit is een kei leuke activiteit</p>
+                        <div class="activity-content" id="1">                        
+                            <div id="activity-image" style="width: 100%">
+                                <img src="http://placehold.it/800x600" style="width: 100%"/>
+                            </div>
+                            <div id="activity-info">
+                                <h1 id="activity-place-name"> Kroegnaam </h1>
+                                <h2 id="activity-place-adress"> Onderwijsboulevard 103, Den Bosch </h2>
+                                <p id ="activity-description">Dit is een kei leuke activiteit</p>
+                            </div>
                         </div>
                     </div>
                     <div id="two" class="ui-content">

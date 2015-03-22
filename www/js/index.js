@@ -34,6 +34,7 @@ var app = {
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
         app.receivedEvent('deviceready');
+        initJavascript();
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
@@ -47,3 +48,60 @@ var app = {
         console.log('Received Event: ' + id);
     }
 };
+
+$(document).ready( function() {
+    var activityArray = [
+        {
+            "id": 1,
+            "description": "this is awesome",
+            "PlaceName": "'t Paultje",
+            "PlaceAdress": "Lepelstraat x"
+        },
+        {
+            "id": 2,
+            "description": "this is even more awesome",
+            "PlaceName": "Skybar",
+            "PlaceAdress": "Onderwijsboulevard 88"
+        }
+    ]
+    $(".activity-content").on("swipeleft", function() {
+        alert("left");
+        curId = parseInt($(".activity-content").attr("id"));
+        for (var i = 0; i < activityArray.length; i++) {
+            if (activityArray[i].id === curId + 1) {
+                alert("found it");
+                $(".activity-content").attr("id", activityArray[i].id);
+                $("#activity-place-name").text(activityArray[i].PlaceName); 
+                $("#activity-place-adress").text(activityArray[i].PlaceAdress);
+                $("#activity-description").text(activityArray[i].description);
+                return;
+            }
+        }
+    });
+    $(".activity-content").on("swiperight", function() {
+        alert("right")
+        curId = $(".activity-content").attr("id");
+        for (var i = 0; i < activityArray.length; i++) {
+            if (activityArray[i].id === curId - 1) {
+                $(".activity-content").attr("id", activityArray[i].id);
+                $("#activity-place-name").text(activityArray[i].PlaceName); 
+                $("#activity-place-adress").text(activityArray[i].PlaceAdress);
+                $("#activity-description").text(activityArray[i].description);
+                return;
+            }
+        }
+    });
+});
+
+$(document).on("pagebeforeshow","#all-races",function(){
+    // alert('show');
+    // $.ajax({
+    //     url:'http://localhost:8080/race',
+    //     type:'GET',
+    //     dataType: 'json',
+    //     success: function(result) {
+    //         alert(result);
+    //     }
+    // });
+    // alert('stop');
+});
