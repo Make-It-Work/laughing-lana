@@ -65,11 +65,9 @@ $(document).ready( function() {
         }
     ]
     $(".activity-content").on("swipeleft", function() {
-        alert("left");
         curId = parseInt($(".activity-content").attr("id"));
         for (var i = 0; i < activityArray.length; i++) {
             if (activityArray[i].id === curId + 1) {
-                alert("found it");
                 $(".activity-content").attr("id", activityArray[i].id);
                 $("#activity-place-name").text(activityArray[i].PlaceName); 
                 $("#activity-place-adress").text(activityArray[i].PlaceAdress);
@@ -79,7 +77,6 @@ $(document).ready( function() {
         }
     });
     $(".activity-content").on("swiperight", function() {
-        alert("right")
         curId = $(".activity-content").attr("id");
         for (var i = 0; i < activityArray.length; i++) {
             if (activityArray[i].id === curId - 1) {
