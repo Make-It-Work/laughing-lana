@@ -34,7 +34,6 @@ var app = {
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
         app.receivedEvent('deviceready');
-        initJavascript();
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
@@ -97,7 +96,7 @@ $(document).ready( function() {
 $(document).on("pagebeforeshow","#all-races", function(){
     alert('show');
     $.ajax({
-        url:'http://127.0.0.1:8080/race',
+        url:'http://145.102.94.77:8080/race',
         type:'GET',
         success: function(result) {
             alert("something");
