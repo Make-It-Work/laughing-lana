@@ -34,6 +34,7 @@ var app = {
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
         app.receivedEvent('deviceready');
+        
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
@@ -94,18 +95,20 @@ $(document).ready( function() {
 });
 
 $(document).on("pagebeforeshow","#all-races", function(){
-    alert('show');
     $.ajax({
-        url:'http://145.102.94.77:8080/race',
+        url:'http://restrace-api.herokuapp.com/race',
         type:'GET',
         success: function(result) {
-            alert("something");
-            alert(result);
+            $('#list-races > ul').empty();
+            $.each(result, function() {
+                html = '<li class="ui-li"><a href="#race-detail"> <img src="icon.png" />';
+                html += '<h2 id="title">' + this.name + '</h2>';
+                html += '<h3 id="description">' + this.description + '</h3></a></li>';
+                $('#list-races > ul').append(html);
+            });
+            $('#list-races > ul').listview('refresh');
         },
         error: function(request, status, error) {
-            var err = eval("(" + request.responseText + ")");
-            alert(err.Message);
         }
     });
-    alert('stop');
 });

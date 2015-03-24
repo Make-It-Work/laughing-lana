@@ -119,15 +119,10 @@
                     <input type="search" name="search" id="search-basic" value="" placeholder="Zoek een race"/>
                 </div>
                 <br/>
-                <ul data-role="listview">
-                    <li>
-                        <a href="#race-detail">
-                            <img src="icon.png" />
-                            <h1 id="title">Race Supersweet</h1>
-                            <h3 id="description"> This is a supersweet race for awesome people </h3>
-                        </a>
-                    </li>
-                </ul>
+                <div id="list-races">
+                    <ul data-role="listview">\
+                    </ul>
+                </div>
             </div>
             <div data-role="footer" data-position="fixed" data-tap-toggle="false" class="jqm-footer" style="text-align: center">
                 <p>Suzanne Jenniskens en Suzanne van Hees</p>
@@ -152,9 +147,9 @@
                                 <img src="http://placehold.it/800x600" style="width: 100%"/>
                             </div>
                             <div id="activity-info">
-                                <h1 id="activity-place-name"> Kroegnaam </h1>
-                                <h2 id="activity-place-adress"> Onderwijsboulevard 103, Den Bosch </h2>
-                                <p id ="activity-description">Dit is een kei leuke activiteit</p>
+                                <h1 id="activity-place-name"></h1>
+                                <h2 id="activity-place-adress"></h2>
+                                <p id ="activity-description"></p>
                             </div>
                         </div>
                     </div>
@@ -173,5 +168,10 @@
                 <p>Suzanne Jenniskens en Suzanne van Hees</p>
             </div><!-- /footer -->
         </div> <!-- /page -->
+
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript">
+            app.initialize();
+        </script>
     </body>
 </html>
