@@ -34,12 +34,34 @@
         <title>Kroegen race</title>
     </head>
     <body>
+        <div id="loginPage" data-role="page">
+            <div data-role="header">
+                <h1>Log in bij de kroegenrace</h1>
+            </div>
+            <div data-role="content">
+                <form id="loginForm">
+                    <div data-role="fieldcontain" class="ui-hide-label">
+                        <label for="username">Username:</label>
+                        <input type="text" name="username" id="username" value="" placeholder="Username" />
+                    </div>
+                    <div data-role="fieldcontain" class="ui-hide-label">
+                        <label for="password">Password:</label>
+                        <input type="password" name="password" id="password" value="" placeholder="Password" />
+                    </div>
+                    <input type="submit" value="Login" id="submitButton">
+                </form>
+            </div>
+            <div data-role="footer">
+            </div>
+        </div>
+        
         <div data-role="page" id="index">
             <div data-role="panel" id="menupanel">
                 <a>Current race </a> <br/>
                 <a>Owned races </a> <br/>
                 <a>Joined races </a> <br/>
                 <a href="#all-races">Find race </a> <br/>
+                <a href="#" id='logout'> Log out </a>
             </div>
             <div data-role="header">
                 <a href="#menupanel" class="ui-btn ui-icon-bars ui-btn-icon-left">Menu </a>
@@ -47,7 +69,7 @@
             </div>
             <div role="main" class="ui-content" style="clear:both">
                 <div>
-                    <button>Add race</button>
+                    <a href="#add-race"><button>Add race</button></a>
                     <input type="search" name="search" id="search-basic" value="" placeholder="Zoek een race"/>
                 </div>
                 <br/>
@@ -129,6 +151,14 @@
             </div><!-- /footer -->
         </div><!-- /page -->
 
+        <div data-role="page" id="add-race">
+            <div data-role="header" style="text-align: center;">Kroegen race</div>
+            <div role="main" class="ui-content">
+            </div>
+            <div data-role="footer" data-position="fixed" data-tap-toggle="false" class="jqm-footer" style="text-align: center">
+                <p>Suzanne Jenniskens en Suzanne van Hees</p>
+            </div><!-- /footer -->
+        </div>
 
         <div data-role="page" id="race-detail">
             <div data-role="header" style="text-align: center;">Kroegen race</div>

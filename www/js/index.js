@@ -34,7 +34,6 @@ var app = {
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
         app.receivedEvent('deviceready');
-        
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
@@ -49,7 +48,47 @@ var app = {
     }
 };
 
+function handleLogin(user, pwd) {
+    var form = $("#loginForm");
+    //disable the button so we can't resubmit while we wait
+    $("#submitButton",form).attr("disabled","disabled");
+    if(user != '' && pwd!= '') {
+        $.post("http://localhost:8080/login?returnType=json", {email:user,password:pwd}, function(res) {
+            console.log(res);
+            if(res !== undefined) {
+                //store
+                window.localStorage.setItem("username", user);
+                window.localStorage.setItem("password",  pwd);
+                window.localStorage.setItem("userId", res._id);
+                $( ":mobile-pagecontainer" ).pagecontainer( "change", "#index");
+            } else {
+                alert("Your login failed");
+            }
+            $("#submitButton").removeAttr("disabled");
+        },"json");
+    }
+    return false;
+}
+
 $(document).ready( function() {
+
+    $('#logout').on("click", function(e) {
+        window.localStorage.removeItem("username");
+        window.localStorage.removeItem("password");
+        window.localStorage.removeItem("userId");
+        $(":mobile-pagecontainer" ).pagecontainer( "change", "#loginPage");
+    })
+
+    $("#loginForm").on("submit",function(e) {
+        //disable the button so we can't resubmit while we wait
+        $("#submitButton",this).attr("disabled","disabled");
+        var u = $("#username", this).val();
+        var p = $("#password", this).val();
+        if(u != '' && p!= '') {
+            handleLogin(u, p);
+        }
+    });
+
     var activityArray = [
         {
             "id": 1,
@@ -111,4 +150,15 @@ $(document).on("pagebeforeshow","#all-races", function(){
         error: function(request, status, error) {
         }
     });
+});
+
+$(document).on("pagebeforeshow", "div[data-role='page']:not(div[id='loginPage'])", function() {
+    if(window.localStorage.getItem("username") === null) {
+        $(":mobile-pagecontainer" ).pagecontainer( "change", "#loginPage");
+    }
+});
+$(document).on("pagebeforeshow", "#loginPage", function() {
+    if(window.localStorage.getItem("username") !== null) {
+        $( ":mobile-pagecontainer" ).pagecontainer( "change", "#index");
+    }
 });
