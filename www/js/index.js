@@ -54,13 +54,14 @@ function handleLogin(user, pwd) {
     $("#submitButton",form).attr("disabled","disabled");
     if(user != '' && pwd!= '') {
         $.post("http://restrace-api.herokuapp.com/login?returnType=json", {email:user,password:pwd}, function(res) {
+            alert("got response");
             console.log(res);
             if(res !== undefined) {
                 //store
                 window.localStorage.setItem("username", user);
                 window.localStorage.setItem("password",  pwd);
                 window.localStorage.setItem("userId", res._id);
-                $( ":mobile-pagecontainer" ).pagecontainer( "change", "#index");
+                $( ":mobile-pagecontainer" ).pagecontainer( "change", "#loginPage");
             } else {
                 alert("Your login failed");
             }
