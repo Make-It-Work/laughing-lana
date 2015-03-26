@@ -61,7 +61,7 @@ function handleLogin(user, pwd) {
                 window.localStorage.setItem("username", user);
                 window.localStorage.setItem("password",  pwd);
                 window.localStorage.setItem("userId", res._id);
-                $( ":mobile-pagecontainer" ).pagecontainer( "change", "#loginPage");
+                $( ":mobile-pagecontainer" ).pagecontainer( "change", "#index");
             } else {
                 alert("Your login failed");
             }
@@ -162,4 +162,7 @@ $(document).on("pagebeforeshow", "#loginPage", function() {
     if(window.localStorage.getItem("username") !== null) {
         $( ":mobile-pagecontainer" ).pagecontainer( "change", "#index");
     }
+});
+$(document).on("pagebeforeshow", "#index", function() {
+    alert("On index page");
 });
