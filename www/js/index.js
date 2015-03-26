@@ -53,9 +53,8 @@ function handleLogin(user, pwd) {
     //disable the button so we can't resubmit while we wait
     $("#submitButton",form).attr("disabled","disabled");
     if(user != '' && pwd!= '') {
+        $("#login-loader").show();
         $.post("http://restrace-api.herokuapp.com/login?returnType=json", {email:user,password:pwd}, function(res) {
-            alert("got response");
-            console.log(res);
             if(res !== undefined) {
                 //store
                 window.localStorage.setItem("username", user);
@@ -65,6 +64,7 @@ function handleLogin(user, pwd) {
             } else {
                 alert("Your login failed");
             }
+            $('#login-loader').hide();
             $("#submitButton").removeAttr("disabled");
         },"json");
     }
@@ -82,6 +82,7 @@ $(document).ready( function() {
 
     $("#loginForm").on("submit",function(e) {
         //disable the button so we can't resubmit while we wait
+        e.preventDefault();
         $("#submitButton",this).attr("disabled","disabled");
         var u = $("#username", this).val();
         var p = $("#password", this).val();
@@ -162,7 +163,4 @@ $(document).on("pagebeforeshow", "#loginPage", function() {
     if(window.localStorage.getItem("username") !== null) {
         $( ":mobile-pagecontainer" ).pagecontainer( "change", "#index");
     }
-});
-$(document).on("pagebeforeshow", "#index", function() {
-    alert("On index page");
 });
