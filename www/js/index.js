@@ -103,6 +103,8 @@ $(document).ready( function() {
             startDateTime: $('#racestarttime').val(),
             endDateTime: $('#raceendtime').val()
         }, function(res) {
+            alert(res.msg);
+            alert(res.message);
             if(res.msg.indexOf("succesfully") >= 0) {
                 $( ":mobile-pagecontainer" ).pagecontainer( "change", "#index");
             } else {
@@ -180,6 +182,8 @@ $(document).on("pagebeforeshow","#all-races", function(){
 $(document).on("pagebeforeshow", "div[data-role='page']:not(div[id='loginPage'])", function() {
     if(window.localStorage.getItem("username") === null) {
         $(":mobile-pagecontainer" ).pagecontainer( "change", "#loginPage");
+    } else {
+        alert("Annoying thing");
     }
 });
 $(document).on("pagebeforeshow", "#loginPage", function() {
