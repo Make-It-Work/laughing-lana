@@ -75,7 +75,7 @@
                 <br/>
                 <ul data-role="listview">
                     <li role="data-divider">
-                        Current race
+                        Owned races
                     </li>
                     <li>
                         <a href="#race-detail">
@@ -84,7 +84,7 @@
                         </a>
                     </li>
                     <li role="data-divider">
-                        Your races
+                        Joined races
                     </li>
                     <li>
                         <a href="#race-detail">
@@ -97,30 +97,6 @@
                         <a href="#race-detail">
                             <img src="icon.png" />
                             Race B
-                        </a>
-                        <a href="#">Join race </a>
-                    </li>
-                    <li role="data-divider">
-                        Other races
-                    </li>
-                    <li>
-                        <a href="#race-detail">
-                            <img src="icon.png" />
-                            Race 1
-                        </a>
-                        <a href="#">Join race </a>
-                    </li>
-                    <li>
-                        <a href="#race-detail">
-                            <img src="icon.png" />
-                            Race 2
-                        </a>
-                        <a href="#">Join race </a>
-                    </li>
-                    <li>
-                        <a href="#race-detail">
-                            <img src="icon.png" />
-                            Race 3
                         </a>
                         <a href="#">Join race </a>
                     </li>
@@ -142,7 +118,7 @@
                 </div>
                 <br/>
                 <div id="list-races">
-                    <ul data-role="listview">\
+                    <ul data-role="listview">
                     </ul>
                 </div>
             </div>
@@ -154,6 +130,26 @@
         <div data-role="page" id="add-race">
             <div data-role="header" style="text-align: center;">Kroegen race</div>
             <div role="main" class="ui-content">
+                <form id="add-race-form">
+                    <div data-role="fieldcontain" class="ui-show-label">
+                        <label for="racename">Name:</label>
+                        <input type="text" name="racename" id="racename" value="" />
+                    </div>
+                    <div data-role="fieldcontain" class="ui-show-label">
+                        <label for="racedescription">Description:</label>
+                        <input type="text" name="racedescription" id="racedescription" value=""/>
+                    </div>
+                    <div data-role="fieldcontain" class="ui-show-label">
+                        <label for="racestarttime">Start time:</label>
+                        <input type="datetime" name="racestarttime" id="racestarttime" value=""/>
+                    </div>
+                    <div data-role="fieldcontain" class="ui-show-label">
+                        <label for="raceendtime">End time:</label>
+                        <input type="datetime" name="raceendtime" id="raceendtime" value=""/>
+                    </div>
+                    <input type="submit" value="Login" id="submitButton">
+                </form>
+                <i class="fa fa-spin fa-spinner" style="font-size: 40px; display:none" id="addrace-loader"></i>
             </div>
             <div data-role="footer" data-position="fixed" data-tap-toggle="false" class="jqm-footer" style="text-align: center">
                 <p>Suzanne Jenniskens en Suzanne van Hees</p>

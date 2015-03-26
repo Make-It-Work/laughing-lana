@@ -91,6 +91,29 @@ $(document).ready( function() {
         }
     });
 
+    $("#add-race-form").on("submit",function(e) {
+        //disable the button so we can't resubmit while we wait
+        e.preventDefault();
+        $("#submitButton",this).attr("disabled","disabled");
+        $("#addrace-loader").show();
+        $.post("http://restrace-api.herokuapp.com/race", {
+            name: $('#racename').val(),
+            description: $('#racedescription').val(),
+            owner: window.localStorage.getItem("userId"),
+            startDateTime: $('#racestarttime').val(),
+            endDateTime: $('#raceendtime').val()
+        }, function(res) {
+            if(res.msg.indexOf("succesfully") >= 0) {
+                $( ":mobile-pagecontainer" ).pagecontainer( "change", "#index");
+            } else {
+                alert("Adding this race failed");
+            }
+            $('#addrace-loader').hide();
+            $("#submitButton").removeAttr("disabled");
+        },"json");
+        return false;
+    });
+
     var activityArray = [
         {
             "id": 1,
@@ -163,4 +186,5 @@ $(document).on("pagebeforeshow", "#loginPage", function() {
     if(window.localStorage.getItem("username") !== null) {
         $( ":mobile-pagecontainer" ).pagecontainer( "change", "#index");
     }
+    return false;
 });
