@@ -53,7 +53,7 @@ function handleLogin(user, pwd) {
     //disable the button so we can't resubmit while we wait
     $("#submitButton",form).attr("disabled","disabled");
     if(user != '' && pwd!= '') {
-        $.post("http://localhost:8080/login?returnType=json", {email:user,password:pwd}, function(res) {
+        $.post("http://restrace-api.herokuapp.com/login?returnType=json", {email:user,password:pwd}, function(res) {
             console.log(res);
             if(res !== undefined) {
                 //store
