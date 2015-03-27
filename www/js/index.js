@@ -158,19 +158,23 @@ $(document).ready( function() {
     });
     $('.join-race').click(function() {
         var race_id = $(this).attr("id");
-        alert(race_id);
         var url = "http://restrace-api.herokuapp.com/race/" + race_id + "/user/" + window.localStorage.getItem('userId');
-        alert(url);
+        $("joinrace-loader").show();
         $.ajax({
-            url: url,
-            type: 'post',
-            headers: {
-                "Content-Type": 'application/json'
+            type:"POST",
+            beforeSend: function (request)
+            {
+                request.setRequestHeader("Content-Type", "application/json");
             },
-            dataType: 'json',
-            success: function (data) {
+            url: url,
+            success: function(msg) {
                 alert("You've joined the race, good luck!");
                 $( ":mobile-pagecontainer" ).pagecontainer( "change", "#index");
+                $("joinrace-loader").hide();
+            },
+            error: function(res) {
+                alert("something went wrong");
+                $("joinrace-loader").hide();
             }
         });
         return false;
