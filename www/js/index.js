@@ -156,6 +156,10 @@ $(document).ready( function() {
             }
         }
     });
+
+
+
+
 });
 
 $(document).on("pagebeforeshow","#all-races", function(){
@@ -165,12 +169,27 @@ $(document).on("pagebeforeshow","#all-races", function(){
         success: function(result) {
             $('#list-races > ul').empty();
             $.each(result, function() {
-                html = '<li class="ui-li"><a href="#race-detail"> <img src="icon.png" />';
-                html += '<h2 id="title">' + this.name + '</h2>';
-                html += '<h3 id="description">' + this.description + '</h3></a></li>';
+                html = '<li class="race-list-item ui-li" id="' + this._id + '"><a href="#race-detail"> <img src="icon.png" />';
+                html += '<h2 class="title">' + this.name + '</h2>';
+                html += '<h3 class="description">' + this.description + '</h3></a></li>';
                 $('#list-races > ul').append(html);
             });
             $('#list-races > ul').listview('refresh');
+            $('.race-list-item').click(function() {
+                alert("clicked");
+                var id = $(this).attr("id");
+                var selector = "li[id=" + id + "] > a > .title";
+                var title = $(selector).text();
+                var selector = "li[id=" + id + "] > a > .description";
+                var description = $(selector).text();
+                alert(id);
+                alert(title);
+                alert(description);
+                $("#race-id").html(id);
+                $("#race-title").html(title);
+                $("#race-description").html(description);
+                $( ":mobile-pagecontainer" ).pagecontainer( "change", "#race-detail");
+            });
         },
         error: function(request, status, error) {
         }
