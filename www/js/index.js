@@ -182,18 +182,26 @@ $(document).on("pagebeforeshow","#all-races", function(){
                 var title = $(selector).text();
                 var selector = "li[id=" + id + "] > a > .description";
                 var description = $(selector).text();
-                alert(id);
-                alert(title);
-                alert(description);
-                $("#race-id").html(id);
                 $("#race-title").html(title);
                 $("#race-description").html(description);
+                $(".join-race").attr("id", id);
                 $( ":mobile-pagecontainer" ).pagecontainer( "change", "#race-detail");
             });
         },
         error: function(request, status, error) {
         }
     });
+});
+
+$('.join-race').tap(function() {
+    var race_id = $(this).attr("id");
+    alert(race_id);
+    var url = "http://restrace-api.herokuapp.com/race/" + race_id + "/user/" + window.localStorage.getItem('userId'); 
+    $.post(url, {}, function(res) {
+        alert("You've joined the race, good luck!");
+        $( ":mobile-pagecontainer" ).pagecontainer( "change", "#index");
+    },"json");
+    return false;
 });
 
 $(document).on("pagebeforeshow", "div[data-role='page']:not(div[id='loginPage'])", function() {
