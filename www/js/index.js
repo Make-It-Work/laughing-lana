@@ -156,9 +156,25 @@ $(document).ready( function() {
             }
         }
     });
-
-
-
+    $('.join-race').click(function() {
+        var race_id = $(this).attr("id");
+        alert(race_id);
+        var url = "http://restrace-api.herokuapp.com/race/" + race_id + "/user/" + window.localStorage.getItem('userId');
+        alert(url);
+        $.ajax({
+            url: url,
+            type: 'post',
+            headers: {
+                "Content-Type": 'application/json'
+            },
+            dataType: 'json',
+            success: function (data) {
+                alert("You've joined the race, good luck!");
+                $( ":mobile-pagecontainer" ).pagecontainer( "change", "#index");
+            }
+        });
+        return false;
+    });
 
 });
 
@@ -191,17 +207,6 @@ $(document).on("pagebeforeshow","#all-races", function(){
         error: function(request, status, error) {
         }
     });
-});
-
-$('.join-race').tap(function() {
-    var race_id = $(this).attr("id");
-    alert(race_id);
-    var url = "http://restrace-api.herokuapp.com/race/" + race_id + "/user/" + window.localStorage.getItem('userId'); 
-    $.post(url, {}, function(res) {
-        alert("You've joined the race, good luck!");
-        $( ":mobile-pagecontainer" ).pagecontainer( "change", "#index");
-    },"json");
-    return false;
 });
 
 $(document).on("pagebeforeshow", "div[data-role='page']:not(div[id='loginPage'])", function() {
