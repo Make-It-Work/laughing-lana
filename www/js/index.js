@@ -206,6 +206,17 @@ $(document).on("pagebeforeshow","#all-races", function(){
                 $("#race-description").html(description);
                 $(".join-race").attr("id", id);
                 $( ":mobile-pagecontainer" ).pagecontainer( "change", "#race-detail");
+                var requestUrl = "http://restrace-api.herokuapp.com/race/" + id;
+                $.get(requestUrl, function(res) {
+                    console.log(res.users);
+                    console.log(window.localStorage.getItem("userId"));
+                    if($.inArray(window.localStorage.getItem("userId"), res.users) >= 0) {
+                        $(".join-race").hide();
+                    } else {
+                        $(".join-race").show();
+                    }
+                });
+                return false;
             });
         },
         error: function(request, status, error) {
