@@ -117,11 +117,12 @@ $(document).ready( function() {
     $("#edit-race-form").on("submit",function(e) {
         //disable the button so we can't resubmit while we wait
         e.preventDefault();
-        var id = $('#race-id').text();
+        var id = $('#editraceid').val();
         var url = "http://restrace-api.herokuapp.com/race/";
         var requestUrl = url.concat(id);
-        $("#submitButton",this).attr("disabled","disabled");
-        $("#addrace-loader").show();
+        alert(requestUrl);
+        $("#editRaceButton",this).attr("disabled","disabled");
+        $("#editrace-loader").show();
         $.put(requestUrl, {
             name: $('#editracename').val(),
             description: $('#editracedescription').val(),
@@ -130,12 +131,14 @@ $(document).ready( function() {
             endDateTime: $('#editraceendtime').val()
         }, function(res) {
             if(res.msg.indexOf("succesfully") >= 0) {
-                $( ":mobile-pagecontainer" ).pagecontainer( "change", "#index");
+                $( ":mobile-pagecontainer" ).pagecontainer("change", "#all-races");
+            } else if(res.message == "Validation failed") {
+                alert("You cannot edit this race");
             } else {
-                alert("Adding this race failed");
+                alert("Editing this race failed");
             }
-            $('#addrace-loader').hide();
-            $("#submitButton").removeAttr("disabled");
+            $('#editrace-loader').hide();
+            $("#editRaceButton").removeAttr("disabled");
         },"json");
         return false;
     });
@@ -286,7 +289,7 @@ $(document).on("pagebeforeshow", '#edit-race', function() {
     var race = JSON.parse(window.localStorage.getItem("currentRace"));
     console.log(race);
     $("#editraceid").val(race._id);
-    $("#editracetitle").val(race.name);
+    $("#editracename").val(race.name);
     $("#editracedescription").val(race.description);
     $("#editracestarttime").val(race.startDateTime);
     $("#editraceendtime").val(race.endDateTime);
