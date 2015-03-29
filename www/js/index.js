@@ -242,8 +242,30 @@ $(document).ready( function() {
             error: function(request, status, error) {
             }
         });
-    })
-
+    });
+    $("#show-more-activities").click(function() {
+        var url = $(this).attr("id");
+        $.ajax({
+            url: url,
+            type:'GET',
+            success: function(result) {
+                $.each(result.results, function() {
+                    html = '<li class="activity-list-item ui-li" id="' + this.id + '"><a href="#place-detail">';
+                    html += '<h2 class="title">' + this.name + '</h2>';
+                    html += '<h3 class="description">' + this.vicinity + '</h3></a></li>';
+                    $('#near-activities > ul').append(html);
+                });
+                $('#near-activities > ul').listview('refresh');
+                if (result.hasOwnProperty(next_page_token)) {
+                    nextUrl = url + "&pagetoken=" + result.next_page_token;
+                    $("#show-more-activities").attr("id", nextUrl);
+                } else {
+                    $("#show-more-activities").hide();
+                }
+            }
+        });
+        return false;
+    });
 });
 
 $(document).on("pagebeforeshow","#all-races", function(){
@@ -331,9 +353,9 @@ $(document).on("pagebeforeshow", '#edit-race', function() {
 });
 
 $(document).on("pagebeforeshow", "#add-activity", function() {
-    $("#activity-loader").show();
     navigator.geolocation.getCurrentPosition(
         function(position) {
+            $("#activity-loader").show();
             alert(position.coords.latitude + ',' + position.coords.longitude);
             var url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyAUxO0NYgx05X4imuydcq4iKr2kGtWjIZI&location=";
             url += position.coords.latitude + ',' + position.coords.longitude;
@@ -344,27 +366,21 @@ $(document).on("pagebeforeshow", "#add-activity", function() {
                 success: function(result) {
                     $('#near-activities > ul').empty();
                     $.each(result.results, function() {
-                        html = '<li class="activity-list-item ui-li" id="' + this.id + '"><a href="#race-detail">';
+                        html = '<li class="activity-list-item ui-li" id="' + this.place_id + '"><a href="#place-detail">';
                         html += '<h2 class="title">' + this.name + '</h2>';
                         html += '<h3 class="description">' + this.vicinity + '</h3></a></li>';
                         $('#near-activities > ul').append(html);
                     });
                     $('#near-activities > ul').listview('refresh');
-                    // $('.race-list-item').click(function() {
-                    //     $(".edit-race").hide();
-                    //     $(".join-race").hide();
-                    //     $(".leave-race").hide();
-                    //     var id = $(this).attr("id");
-                    //     var selector = "li[id=" + id + "] > a > .title";
-                    //     var title = $(selector).text();
-                    //     var selector = "li[id=" + id + "] > a > .description";
-                    //     var description = $(selector).text();
-                    //     $('#race-id').html(id);
-                    //     $("#race-title").html(title);
-                    //     $("#race-description").html(description);
-                    //     $( ":mobile-pagecontainer" ).pagecontainer( "change", "#race-detail");
-                    //     return false;
-                    // });
+                    if (result.hasOwnProperty(next_page_token)) {
+                        nextUrl = url + "&pagetoken=" + result.next_page_token;
+                        $("#show-more-activities").attr("id", nextUrl);
+                    }
+                    $(".activity-list-item").tap(function(event) {
+                        event.preventDefault();
+                        buildDetailPage(this);
+                        $(":mobile-pagecontainer" ).pagecontainer( "change", "#loginPage");
+                    });
                 },
                 error: function(request, status, error) {
                 }
@@ -378,3 +394,18 @@ $(document).on("pagebeforeshow", "#add-activity", function() {
     $('#activity-loader').hide();
     return false;
 });
+function buildDetailPage(item) {
+    var url = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + item.attr("id") + "&key=AIzaSyAUxO0NYgx05X4imuydcq4iKr2kGtWjIZI";
+    $.ajax({
+        url: url,
+        type:'GET',
+        success: function(result) {
+            $('#place-name').html(result.name);
+            $('#place-address').html(result.vicinity);
+            $('#place-phone').html(result.internation_phone_number);
+            $('#place-rating').html(result.rating);
+        },
+        error: function(request, status, error) {
+        }
+    });
+})
