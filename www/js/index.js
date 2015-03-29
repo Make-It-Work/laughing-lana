@@ -230,7 +230,7 @@ $(document).ready( function() {
             type:'DELETE',
             success: function(res) {
                 console.log(res);
-                if(res.indexOf("succesfully") >= 0) {
+                if(res.msg.indexOf("succesfully") >= 0) {
                     $( ":mobile-pagecontainer" ).pagecontainer("change", "#all-races");
                 } else if(res.message == "Validation failed") {
                     alert("You cannot delete this race");
