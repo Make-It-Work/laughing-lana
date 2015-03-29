@@ -416,4 +416,4 @@ function buildDetailPage(item) {
         error: function(request, status, error) {
         }
     });
-})
+}
