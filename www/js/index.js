@@ -331,12 +331,50 @@ $(document).on("pagebeforeshow", '#edit-race', function() {
 });
 
 $(document).on("pagebeforeshow", "#add-activity", function() {
+    $("#activity-loader").show();
     navigator.geolocation.getCurrentPosition(
         function(position) {
             alert(position.coords.latitude + ',' + position.coords.longitude);
+            var url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyAUxO0NYgx05X4imuydcq4iKr2kGtWjIZI&location=";
+            url += position.coords.latitude + ',' + position.coords.longitude;
+            url += "&radius=7500&type=cafe";
+            $.ajax({
+                url: url,
+                type:'GET',
+                success: function(result) {
+                    $('#near-activities > ul').empty();
+                    $.each(result.results, function() {
+                        html = '<li class="activity-list-item ui-li" id="' + this.id + '"><a href="#race-detail">';
+                        html += '<h2 class="title">' + this.name + '</h2>';
+                        html += '<h3 class="description">' + this.formatted_address + '</h3></a></li>';
+                        $('#near-activities > ul').append(html);
+                    });
+                    $('#list-races > ul').listview('refresh');
+                    // $('.race-list-item').click(function() {
+                    //     $(".edit-race").hide();
+                    //     $(".join-race").hide();
+                    //     $(".leave-race").hide();
+                    //     var id = $(this).attr("id");
+                    //     var selector = "li[id=" + id + "] > a > .title";
+                    //     var title = $(selector).text();
+                    //     var selector = "li[id=" + id + "] > a > .description";
+                    //     var description = $(selector).text();
+                    //     $('#race-id').html(id);
+                    //     $("#race-title").html(title);
+                    //     $("#race-description").html(description);
+                    //     $( ":mobile-pagecontainer" ).pagecontainer( "change", "#race-detail");
+                    //     return false;
+                    // });
+                },
+                error: function(request, status, error) {
+                }
+            });
+            return false;
         },
         function() {
             alert('Error getting location');
-        });
+        }
+    );
+    $('#activity-loader').hide();
     return false;
 });
