@@ -205,6 +205,9 @@ $(document).ready( function() {
         });
         return false;
     });
+    $('.edit-race').click(function() {
+        $(":mobile-pagecontainer" ).pagecontainer( "change", "#edit-race");
+    });
 
 });
 
