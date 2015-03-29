@@ -346,10 +346,10 @@ $(document).on("pagebeforeshow", "#add-activity", function() {
                     $.each(result.results, function() {
                         html = '<li class="activity-list-item ui-li" id="' + this.id + '"><a href="#race-detail">';
                         html += '<h2 class="title">' + this.name + '</h2>';
-                        html += '<h3 class="description">' + this.formatted_address + '</h3></a></li>';
+                        html += '<h3 class="description">' + this.vicinity + '</h3></a></li>';
                         $('#near-activities > ul').append(html);
                     });
-                    $('#list-races > ul').listview('refresh');
+                    $('#near-activities > ul').listview('refresh');
                     // $('.race-list-item').click(function() {
                     //     $(".edit-race").hide();
                     //     $(".join-race").hide();
