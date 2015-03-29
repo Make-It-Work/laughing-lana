@@ -120,35 +120,34 @@ $(document).ready( function() {
         var id = $('#editraceid').val();
         var url = "http://restrace-api.herokuapp.com/race/";
         var requestUrl = url.concat(id);
-        alert(requestUrl);
         $("#editRaceButton",this).attr("disabled","disabled");
         $("#editrace-loader").show();
         $.ajax({
-        url: requestUrl,
-        type:'PUT',
-        data: {
-            name: $('#editracename').val(),
-            description: $('#editracedescription').val(),
-            owner: window.localStorage.getItem("userId"),
-            startDateTime: $('#editracestarttime').val(),
-            endDateTime: $('#editraceendtime').val()
-        },
-        success: function(res) {
-            console.log(res);
-            if(res.indexOf("succesfully") >= 0) {
-                $( ":mobile-pagecontainer" ).pagecontainer("change", "#all-races");
-            } else if(res.message == "Validation failed") {
-                alert("You cannot edit this race");
-            } else {
-                alert("Editing this race failed");
+            url: requestUrl,
+            type:'PUT',
+            data: {
+                name: $('#editracename').val(),
+                description: $('#editracedescription').val(),
+                owner: window.localStorage.getItem("userId"),
+                startDateTime: $('#editracestarttime').val(),
+                endDateTime: $('#editraceendtime').val()
+            },
+            success: function(res) {
+                console.log(res);
+                if(res.indexOf("succesfully") >= 0) {
+                    $( ":mobile-pagecontainer" ).pagecontainer("change", "#all-races");
+                } else if(res.message == "Validation failed") {
+                    alert("You cannot edit this race");
+                } else {
+                    alert("Editing this race failed");
+                }
+                $('#editrace-loader').hide();
+                $("#editRaceButton").removeAttr("disabled");
+            },
+            error: function(request, status, error) {
             }
-            $('#editrace-loader').hide();
-            $("#editRaceButton").removeAttr("disabled");
-        },
-        error: function(request, status, error) {
-        }
-    });
-    return false;
+        });
+        return false;
     });
 
     var activityArray = [
@@ -218,7 +217,32 @@ $(document).ready( function() {
     });
     $('.edit-race').click(function() {
         $(":mobile-pagecontainer" ).pagecontainer( "change", "#edit-race");
+        return false;
     });
+    $('.delete-race').click(function() {
+        var id = $('this > div').html();
+        alert(id);
+        var url = "http://restrace-api.herokuapp.com/race/";
+        var requestUrl = url.concat(id);
+        alert(requestUrl);
+        $.ajax({
+            url: requestUrl,
+            type:'DELETE',
+            success: function(res) {
+                console.log(res);
+                if(res.indexOf("succesfully") >= 0) {
+                    $( ":mobile-pagecontainer" ).pagecontainer("change", "#all-races");
+                } else if(res.message == "Validation failed") {
+                    alert("You cannot delete this race");
+                } else {
+                    alert("Deleting this race failed");
+                }
+                $("#editRaceButton").removeAttr("disabled");
+            },
+            error: function(request, status, error) {
+            }
+        });
+    })
 
 });
 
@@ -281,6 +305,8 @@ $(document).on("pagebeforeshow", "#race-detail", function() {
         if (res.owner == window.localStorage.getItem("userId")) {
             $(".edit-race").show();
             $(".edit-race").attr("id", id);
+            $(".delete-race").show();
+            $("#delete-race-id").html(id);
         } else if($.inArray(window.localStorage.getItem("userId"), res.users) >= 0) {
             $(".leave-race").show();
             $(".leave-race").attr("id", id);
@@ -301,4 +327,5 @@ $(document).on("pagebeforeshow", '#edit-race', function() {
     $("#editracedescription").val(race.description);
     $("#editracestarttime").val(race.startDateTime);
     $("#editraceendtime").val(race.endDateTime);
+    return false;
 });
