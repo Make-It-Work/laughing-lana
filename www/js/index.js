@@ -250,7 +250,7 @@ $(document).ready( function() {
             type:'GET',
             success: function(result) {
                 $.each(result.results, function() {
-                    html = '<li class="activity-list-item ui-li" id="' + this.id + '"><a href="#place-detail">';
+                    html = '<li class="activity-list-item ui-li" id="' + this.id + '"><a>';
                     html += '<h2 class="title">' + this.name + '</h2>';
                     html += '<h3 class="description">' + this.vicinity + '</h3></a></li>';
                     $('#near-activities > ul').append(html);
@@ -262,6 +262,11 @@ $(document).ready( function() {
                 } else {
                     $("#show-more-activities").hide();
                 }
+                $(".activity-list-item").tap(function(event) {
+                    event.preventDefault();
+                    buildDetailPage(this);
+                    $(":mobile-pagecontainer" ).pagecontainer( "change", "#place-detail");
+                });
             }
         });
         return false;
@@ -366,7 +371,7 @@ $(document).on("pagebeforeshow", "#add-activity", function() {
                 success: function(result) {
                     $('#near-activities > ul').empty();
                     $.each(result.results, function() {
-                        html = '<li class="activity-list-item ui-li" id="' + this.place_id + '"><a href="#place-detail">';
+                        html = '<li class="activity-list-item ui-li" id="' + this.place_id + '"><a>';
                         html += '<h2 class="title">' + this.name + '</h2>';
                         html += '<h3 class="description">' + this.vicinity + '</h3></a></li>';
                         $('#near-activities > ul').append(html);
@@ -374,12 +379,15 @@ $(document).on("pagebeforeshow", "#add-activity", function() {
                     $('#near-activities > ul').listview('refresh');
                     if (result.hasOwnProperty(next_page_token)) {
                         nextUrl = url + "&pagetoken=" + result.next_page_token;
+                        $("#show-more-activities").show();
                         $("#show-more-activities").attr("id", nextUrl);
+                    } else {
+                        $("show-more-activities").hide();
                     }
                     $(".activity-list-item").tap(function(event) {
                         event.preventDefault();
                         buildDetailPage(this);
-                        $(":mobile-pagecontainer" ).pagecontainer( "change", "#loginPage");
+                        $(":mobile-pagecontainer" ).pagecontainer( "change", "#place-detail");
                     });
                 },
                 error: function(request, status, error) {
