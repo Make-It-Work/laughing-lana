@@ -220,7 +220,7 @@ $(document).ready( function() {
         return false;
     });
     $('.delete-race').click(function() {
-        var id = $('this > div').html();
+        var id = $('#delete-race-id').html();
         alert(id);
         var url = "http://restrace-api.herokuapp.com/race/";
         var requestUrl = url.concat(id);
