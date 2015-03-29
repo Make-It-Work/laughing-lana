@@ -329,3 +329,14 @@ $(document).on("pagebeforeshow", '#edit-race', function() {
     $("#editraceendtime").val(race.endDateTime);
     return false;
 });
+
+$(document).on("pagebeforeshow", "#add-activity", function() {
+    navigator.geolocation.getCurrentPosition(
+        function(position) {
+            alert(position.coords.latitude + ',' + position.coords.longitude);
+        },
+        function() {
+            alert('Error getting location');
+        });
+    return false;
+});
