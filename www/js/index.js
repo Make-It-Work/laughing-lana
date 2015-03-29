@@ -114,6 +114,32 @@ $(document).ready( function() {
         return false;
     });
 
+    $("#edit-race-form").on("submit",function(e) {
+        //disable the button so we can't resubmit while we wait
+        e.preventDefault();
+        var id = $('#race-id').text();
+        var url = "http://restrace-api.herokuapp.com/race/";
+        var requestUrl = url.concat(id);
+        $("#submitButton",this).attr("disabled","disabled");
+        $("#addrace-loader").show();
+        $.put(requestUrl, {
+            name: $('#editracename').val(),
+            description: $('#editracedescription').val(),
+            owner: window.localStorage.getItem("userId"),
+            startDateTime: $('#editracestarttime').val(),
+            endDateTime: $('#editraceendtime').val()
+        }, function(res) {
+            if(res.msg.indexOf("succesfully") >= 0) {
+                $( ":mobile-pagecontainer" ).pagecontainer( "change", "#index");
+            } else {
+                alert("Adding this race failed");
+            }
+            $('#addrace-loader').hide();
+            $("#submitButton").removeAttr("disabled");
+        },"json");
+        return false;
+    });
+
     var activityArray = [
         {
             "id": 1,
@@ -189,6 +215,7 @@ $(document).on("pagebeforeshow","#all-races", function(){
         success: function(result) {
             $('#list-races > ul').empty();
             $.each(result, function() {
+                var link = "#race-detail";
                 html = '<li class="race-list-item ui-li" id="' + this._id + '"><a href="#race-detail"> <img src="icon.png" />';
                 html += '<h2 class="title">' + this.name + '</h2>';
                 html += '<h3 class="description">' + this.description + '</h3></a></li>';
@@ -196,32 +223,25 @@ $(document).on("pagebeforeshow","#all-races", function(){
             });
             $('#list-races > ul').listview('refresh');
             $('.race-list-item').click(function() {
-                alert("clicked");
+                $(".edit-race").hide();
+                $(".join-race").hide();
+                $(".leave-race").hide();
                 var id = $(this).attr("id");
                 var selector = "li[id=" + id + "] > a > .title";
                 var title = $(selector).text();
                 var selector = "li[id=" + id + "] > a > .description";
                 var description = $(selector).text();
+                $('#race-id').html(id);
                 $("#race-title").html(title);
                 $("#race-description").html(description);
-                $(".join-race").attr("id", id);
                 $( ":mobile-pagecontainer" ).pagecontainer( "change", "#race-detail");
-                var requestUrl = "http://restrace-api.herokuapp.com/race/" + id;
-                $.get(requestUrl, function(res) {
-                    console.log(res.users);
-                    console.log(window.localStorage.getItem("userId"));
-                    if($.inArray(window.localStorage.getItem("userId"), res.users) >= 0) {
-                        $(".join-race").hide();
-                    } else {
-                        $(".join-race").show();
-                    }
-                });
                 return false;
             });
         },
         error: function(request, status, error) {
         }
     });
+    return false;
 });
 
 $(document).on("pagebeforeshow", "div[data-role='page']:not(div[id='loginPage'])", function() {
@@ -237,4 +257,33 @@ $(document).on("pagebeforeshow", "#loginPage", function() {
     } else {
         return false;
     }
+});
+$(document).on("pagebeforeshow", "#race-detail", function() {
+    var id = $('#race-id').text();
+    var url = "http://restrace-api.herokuapp.com/race/";
+    var requestUrl = url.concat(id);
+    console.log("url: " + requestUrl);
+    $.get(requestUrl, function(res) {
+        if (res.owner == window.localStorage.getItem("userId")) {
+            $(".edit-race").show();
+            $(".edit-race").attr("id", id);
+        } else if($.inArray(window.localStorage.getItem("userId"), res.users) >= 0) {
+            $(".leave-race").show();
+            $(".leave-race").attr("id", id);
+        } else {
+            $(".join-race").show();
+            $(".join-race").attr("id", id);
+        }
+        window.localStorage.setItem("currentRace", JSON.stringify(res));
+    });
+    return false;
+});
+$(document).on("pagebeforeshow", '#edit-race', function() {
+    var race = JSON.parse(window.localStorage.getItem("currentRace"));
+    console.log(race);
+    $("#editraceid").val(race._id);
+    $("#editracetitle").val(race.title);
+    $("#editracedescription").val(race.description);
+    $("editracestarttime").val(race.startDateTime);
+    $("editraceendtime").val(race.endDateTime);
 });

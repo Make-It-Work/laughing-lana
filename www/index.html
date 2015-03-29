@@ -156,13 +156,49 @@
             </div><!-- /footer -->
         </div>
 
+        <div data-role="page" id="edit-race">
+            <div data-role="header" style="text-align: center;">Kroegen race</div>
+            <div role="main" class="ui-content">
+                <form id="edit-race-form">
+                    <input type="hidden" id="editraceid" value=""/>
+                    <div data-role="fieldcontain" class="ui-show-label">
+                        <label for="racename">Name:</label>
+                        <input type="text" name="editracename" id="editracename" value="" />
+                    </div>
+                    <div data-role="fieldcontain" class="ui-show-label">
+                        <label for="racedescription">Description:</label>
+                        <input type="text" name="editracedescription" id="editracedescription" value=""/>
+                    </div>
+                    <div data-role="fieldcontain" class="ui-show-label">
+                        <label for="racestarttime">Start time:</label>
+                        <input type="datetime" name="editracestarttime" id="editracestarttime" value=""/>
+                    </div>
+                    <div data-role="fieldcontain" class="ui-show-label">
+                        <label for="raceendtime">End time:</label>
+                        <input type="datetime" name="editraceendtime" id="editraceendtime" value=""/>
+                    </div>
+                    <input type="submit" value="Login" id="editRaceButton">
+                </form>
+                <i class="fa fa-spin fa-spinner" style="font-size: 40px; display:none" id="editrace-loader"></i>
+            </div>
+            <div data-role="footer" data-position="fixed" data-tap-toggle="false" class="jqm-footer" style="text-align: center">
+                <p>Suzanne Jenniskens en Suzanne van Hees</p>
+            </div><!-- /footer -->
+        </div>
+
         <div data-role="page" id="race-detail">
             <div data-role="header" style="text-align: center;">Kroegen race</div>
             <div role="main" class="ui-content">
                 <div id="race-id" style="display:none">
                 </div>
-                <div style="align: right">
-                    <button class="join-race">Join this race</button>
+                <div>
+                    <button class="join-race" style="display:none">Join this race</button>
+                </div>
+                <div>
+                    <button class="edit-race" style="display:none">Edit this race</button>
+                </div>
+                <div>
+                    <button class="leave-race" style="display:none">Leave this race</button>
                 </div>
                 <i class="fa fa-spin fa-spinner" style="font-size: 40px; display:none" id="joinrace-loader"></i>
                 <div>
