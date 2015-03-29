@@ -123,14 +123,19 @@ $(document).ready( function() {
         alert(requestUrl);
         $("#editRaceButton",this).attr("disabled","disabled");
         $("#editrace-loader").show();
-        $.put(requestUrl, {
+        $.ajax({
+        url: requestUrl,
+        type:'PUT',
+        data: {
             name: $('#editracename').val(),
             description: $('#editracedescription').val(),
             owner: window.localStorage.getItem("userId"),
             startDateTime: $('#editracestarttime').val(),
             endDateTime: $('#editraceendtime').val()
-        }, function(res) {
-            if(res.msg.indexOf("succesfully") >= 0) {
+        },
+        success: function(res) {
+            console.log(res);
+            if(res.indexOf("succesfully") >= 0) {
                 $( ":mobile-pagecontainer" ).pagecontainer("change", "#all-races");
             } else if(res.message == "Validation failed") {
                 alert("You cannot edit this race");
@@ -139,8 +144,11 @@ $(document).ready( function() {
             }
             $('#editrace-loader').hide();
             $("#editRaceButton").removeAttr("disabled");
-        },"json");
-        return false;
+        },
+        error: function(request, status, error) {
+        }
+    });
+    return false;
     });
 
     var activityArray = [
