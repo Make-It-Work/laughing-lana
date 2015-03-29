@@ -278,6 +278,7 @@ $(document).on("pagebeforeshow", "#race-detail", function() {
             $(".join-race").attr("id", id);
         }
         window.localStorage.setItem("currentRace", JSON.stringify(res));
+        console.log(window.localStorage.getItem("currentRace"));
     });
     return false;
 });
@@ -285,8 +286,8 @@ $(document).on("pagebeforeshow", '#edit-race', function() {
     var race = JSON.parse(window.localStorage.getItem("currentRace"));
     console.log(race);
     $("#editraceid").val(race._id);
-    $("#editracetitle").val(race.title);
+    $("#editracetitle").val(race.name);
     $("#editracedescription").val(race.description);
-    $("editracestarttime").val(race.startDateTime);
-    $("editraceendtime").val(race.endDateTime);
+    $("#editracestarttime").val(race.startDateTime);
+    $("#editraceendtime").val(race.endDateTime);
 });
