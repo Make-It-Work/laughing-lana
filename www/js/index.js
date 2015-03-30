@@ -263,7 +263,7 @@ $(document).ready( function() {
                     $("#show-more-activities").hide();
                 }
                 $(".activity-list-item").click(function(event) {
-                    buildDetailPage(e.target);
+                    buildDetailPage($(e.target));
                     $(":mobile-pagecontainer" ).pagecontainer( "change", "#place-detail");
                 });
             }
@@ -357,6 +357,7 @@ $(document).on("pagebeforeshow", '#edit-race', function() {
 });
 
 $(document).on("pagebeforeshow", "#add-activity", function() {
+    alert("pagebeforeshow");
     navigator.geolocation.getCurrentPosition(
         function(position) {
             $("#activity-loader").show();
@@ -379,8 +380,7 @@ $(document).on("pagebeforeshow", "#add-activity", function() {
                     $('#near-activities > ul').listview('refresh');
 
                     $(".activity-list-item").click(function(e) {
-                        console.log(e.target);
-                        buildDetailPage(e.target);
+                        buildDetailPage($(e.target));
                         $(":mobile-pagecontainer" ).pagecontainer( "change", "#place-detail");
                     });
                     if (result.hasOwnProperty("next_page_token")) {
