@@ -246,26 +246,16 @@ $(document).ready( function() {
     
     $('.add-place-to-race').click(function (event) {
         alert('clicked');
-        console.log($(this).attr("id"));
-        var activityId;
-        $.ajax({
-            data: {
-                place_id: $(this).attr("id"),
-                description: $("#add-activity-description")
-            },
-            type:"POST",
-            beforeSend: function (request)
-            {
-                request.setRequestHeader("Content-Type", "application/json");
-            },
-            url: "http://restrace-api.herokuapp.com/activity",
-            success: function(msg) {
-                console.log(msg);
-            },
-            error: function(res) {
-                alert("something went wrong");
-            }
-        });
+        var activityAdd = postActivityRequest($(this).attr("id"));
+        if (activityAdd !== false) {
+            $.post(url, function() {
+                $( ":mobile-pagecontainer" ).pagecontainer("change", "#add-activity");
+            });
+        } else {
+            alert("Something went wrong");
+            $( ":mobile-pagecontainer" ).pagecontainer("change", "#add-activity");
+        }
+        
         return false;
     });
 
@@ -451,4 +441,64 @@ function buildDetailPage(item) {
             alert(error);
         }
     });
+}
+
+function postActivityRequest(place_id) {
+    $.ajax({
+        data: {
+            google_id: $(this).attr("id"),
+            description: $("#add-activity-description")
+        },
+        type:"POST",
+        beforeSend: function (request)
+        {
+            request.setRequestHeader("Content-Type", "application/json");
+        },
+        url: "http://restrace-api.herokuapp.com/activity",
+        success: function(response) {
+            if(response.errors !== undefined && response.errors.google_id !== undefined && response.errors.google_id.message === "Invalid place id") {
+                var reqUrl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + place_id + "&key=AIzaSyAUxO0NYgx05X4imuydcq4iKr2kGtWjIZI";
+                var place;
+                $.get(reqUrl, function(placeResponse) {
+                    place = {
+                        google_id: place_id,
+                        name: placeResponse.result.name,
+                        address: placeResponse.result.vicinity,
+                        location : {
+                            lat: placeResponse.result.geometry.location.lat,
+                            lng: placeResponse.result.geometry.location.lng
+                        }
+                    }
+                });
+                if (place !== undefined) {
+                    $.ajax({
+                        data: place,
+                        type:"POST",
+                        beforeSend: function (request)
+                        {
+                            request.setRequestHeader("Content-Type", "application/json");
+                        },
+                        url: "http://restrace-api.herokuapp.com/place",
+                        success: function(response) {
+                            alert("created place, retrying");
+                            postActivityRequest(place_id);
+                        },
+                        error: function(res) {
+                            alert("something went wrong");
+                        }
+                    });
+                }
+            } else {
+                alert("place gevonden");
+                //Vind het ID in de string die in de response.msg staat.
+                var responseString = response.msg;
+                var splitString = responseString.split("id");
+                return splitString[1].slice(0, splitString[1].indexOf(" "));
+            }
+        },
+        error: function(res) {
+            alert("something went wrong");
+        }
+    });
+    return false;
 }
