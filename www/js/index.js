@@ -384,8 +384,7 @@ $(document).on("pagebeforeshow", "#add-activity", function() {
                     } else {
                         $("show-more-activities").hide();
                     }
-                    $(".activity-list-item").tap(function(event) {
-                        event.preventDefault();
+                    $(".activity-list-item").click(function() {
                         buildDetailPage(this);
                         $(":mobile-pagecontainer" ).pagecontainer( "change", "#place-detail");
                     });
@@ -403,6 +402,7 @@ $(document).on("pagebeforeshow", "#add-activity", function() {
     return false;
 });
 function buildDetailPage(item) {
+    alert("building page");
     var url = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + item.attr("id") + "&key=AIzaSyAUxO0NYgx05X4imuydcq4iKr2kGtWjIZI";
     $.ajax({
         url: url,
