@@ -377,17 +377,18 @@ $(document).on("pagebeforeshow", "#add-activity", function() {
                         $('#near-activities > ul').append(html);
                     });
                     $('#near-activities > ul').listview('refresh');
+
+                    $(".activity-list-item").click(function() {
+                        buildDetailPage(this);
+                        $(":mobile-pagecontainer" ).pagecontainer( "change", "#place-detail");
+                    });
                     if (result.hasOwnProperty(next_page_token)) {
-                        nextUrl = url + "&pagetoken=" + result.next_page_token;
+                        var nextUrl = url + "&pagetoken=" + result.next_page_token;
                         $("#show-more-activities").show();
                         $("#show-more-activities").attr("id", nextUrl);
                     } else {
                         $("show-more-activities").hide();
                     }
-                    $(".activity-list-item").click(function() {
-                        buildDetailPage(this);
-                        $(":mobile-pagecontainer" ).pagecontainer( "change", "#place-detail");
-                    });
                 },
                 error: function(request, status, error) {
                 }
