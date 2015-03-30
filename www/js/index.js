@@ -262,9 +262,8 @@ $(document).ready( function() {
                 } else {
                     $("#show-more-activities").hide();
                 }
-                $(".activity-list-item").tap(function(event) {
-                    event.preventDefault();
-                    buildDetailPage(this);
+                $(".activity-list-item").click(function(event) {
+                    buildDetailPage(e.target);
                     $(":mobile-pagecontainer" ).pagecontainer( "change", "#place-detail");
                 });
             }
@@ -380,11 +379,12 @@ $(document).on("pagebeforeshow", "#add-activity", function() {
                     $('#near-activities > ul').listview('refresh');
 
                     $(".activity-list-item").click(function(e) {
-                        buildDetailPage($(e.target));
+                        console.log(e.target);
+                        buildDetailPage(e.target);
                         $(":mobile-pagecontainer" ).pagecontainer( "change", "#place-detail");
                     });
                     if (result.hasOwnProperty("next_page_token")) {
-                        var nextUrl = url + "&pagetoken=" + result.next_page_token;
+                        var nextUrl = reqUrl + "&pagetoken=" + result.next_page_token;
                         $("#show-more-activities").show();
                         $("#show-more-activities").attr("id", nextUrl);
                     } else {
@@ -406,9 +406,10 @@ $(document).on("pagebeforeshow", "#add-activity", function() {
 });
 function buildDetailPage(item) {
     alert("building page");
-    var url = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + item.attr("id") + "&key=AIzaSyAUxO0NYgx05X4imuydcq4iKr2kGtWjIZI";
+    alert(item.attr("id"));
+    var reqUrl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + item.attr("id") + "&key=AIzaSyAUxO0NYgx05X4imuydcq4iKr2kGtWjIZI";
     $.ajax({
-        url: url,
+        url: reqUrl,
         type:'GET',
         success: function(result) {
             $('#place-name').html(result.name);
