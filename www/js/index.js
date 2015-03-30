@@ -411,13 +411,17 @@ function buildDetailPage(item) {
     $.ajax({
         url: reqUrl,
         type:'GET',
+        dataType: 'json',
         success: function(result) {
-            $('#place-name').html(result.name);
-            $('#place-address').html(result.vicinity);
-            $('#place-phone').html(result.internation_phone_number);
-            $('#place-rating').html(result.rating);
+            var jsonData = JSON.parse(result);
+            alert("i have a result");
+            $('#place-name').html(jsonData.name);
+            $('#place-address').html(jsonData.vicinity);
+            $('#place-phone').html(jsonData.international_phone_number);
+            $('#place-rating').html(jsonData.rating);
         },
         error: function(request, status, error) {
+            alert(error);
         }
     });
 }
