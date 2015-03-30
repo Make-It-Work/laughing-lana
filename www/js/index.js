@@ -243,6 +243,32 @@ $(document).ready( function() {
             }
         });
     });
+    
+    $('.add-place-to-race').click(function (event) {
+        alert('clicked');
+        console.log($(this).attr("id"));
+        var activityId;
+        $.ajax({
+            data: {
+                place_id: $(this).attr("id"),
+                description: $("#add-activity-description")
+            },
+            type:"POST",
+            beforeSend: function (request)
+            {
+                request.setRequestHeader("Content-Type", "application/json");
+            },
+            url: "http://restrace-api.herokuapp.com/activity",
+            success: function(msg) {
+                console.log(msg);
+            },
+            error: function(res) {
+                alert("something went wrong");
+            }
+        });
+        return false;
+    });
+
     $("#show-more-activities").click(function() {
         var url = $(this).attr("id");
         $.ajax({
@@ -419,6 +445,7 @@ function buildDetailPage(item) {
             $('#place-address').text(jsonData.vicinity);
             $('#place-phone').text(jsonData.international_phone_number);
             $('#place-rating').text(jsonData.rating);
+            $('.add-place-to-race').attr("id", item.attr("id"));
         },
         error: function(request, status, error) {
             alert(error);

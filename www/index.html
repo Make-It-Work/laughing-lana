@@ -59,13 +59,14 @@
         </div>
         
         <div data-role="page" id="index">
-            <div data-role="panel" id="menupanel">
+            <div data-role="panel" id="menupanel" data-position="right">
+                <a href="#index">Home page</a> <br/>
                 <a href="#all-races">Find race </a> <br/>
                 <a id="logout" href="#"> Log out </a>
             </div>
             <div data-role="header">
-                <a href="#menupanel" class="ui-btn ui-icon-bars ui-btn-icon-left">Menu </a>
-                <span style="text-align: center; font-size: 28px; float: right;">Kroegen race </span>
+                <h4 style="text-align: center;">Kroegen race </h4>
+                <a style="display: none"></a><a href="#menupanel" class="ui-btn ui-icon-bars ui-btn-icon-left">Menu </a>
             </div>
             <div role="main" class="ui-content" style="clear:both">
                 <div>
@@ -108,8 +109,15 @@
         </div> <!-- /page -->
 
         <div data-role="page" id="all-races">
+            <div data-role="panel" id="menupanel" data-position="right">
+                <a href="#index">Home page</a> <br/>
+                <a href="#all-races">Find race </a> <br/>
+                <a id="logout" href="#"> Log out </a>
+            </div>
             <div data-role="header">
-                <span style="text-align: center; font-size: 28px; float: right;">Kroegen race </span>
+                <a href="#index" class="ui-btn ui-icon-arrow-l ui-btn-icon-left">Back </a>
+                <a href="#menupanel" class="ui-btn ui-icon-bars ui-btn-icon-left">Menu </a>
+                <h4 style="text-align: center;">Kroegen race </h4>
             </div>
             <div role="main" class="ui-content" style="clear:both">
                 <div>
@@ -128,7 +136,16 @@
         </div><!-- /page -->
 
         <div data-role="page" id="add-race">
-            <div data-role="header" style="text-align: center;">Kroegen race</div>
+            <div data-role="panel" id="menupanel" data-position="right">
+                <a href="#index">Home page</a> <br/>
+                <a href="#all-races">Find race </a> <br/>
+                <a id="logout" href="#"> Log out </a>
+            </div>
+            <div data-role="header">
+                <a href="#all-races" class="ui-btn ui-icon-arrow-l ui-btn-icon-left">Back </a>
+                <a href="#menupanel" class="ui-btn ui-icon-bars ui-btn-icon-left">Menu </a>
+                <h4 style="text-align: center;">Kroegen race </h4>
+            </div>
             <div role="main" class="ui-content">
                 <form id="add-race-form">
                     <div data-role="fieldcontain" class="ui-show-label">
@@ -157,7 +174,16 @@
         </div>
 
         <div data-role="page" id="edit-race">
-            <div data-role="header" style="text-align: center;">Kroegen race</div>
+            <div data-role="panel" id="menupanel" data-position="right">
+                <a href="#index">Home page</a> <br/>
+                <a href="#all-races">Find race </a> <br/>
+                <a id="logout" href="#"> Log out </a>
+            </div>
+            <div data-role="header">
+                <a href="#all-races" class="ui-btn ui-icon-arrow-l ui-btn-icon-left">Back </a>
+                <a href="#menupanel" class="ui-btn ui-icon-bars ui-btn-icon-left">Menu </a>
+                <h4 style="text-align: center;">Kroegen race </h4>
+            </div>
             <div role="main" class="ui-content">
                 <a href="#add-activity"><button class="add-activity">Add Activity</button></a>
                 <form id="edit-race-form">
@@ -188,7 +214,16 @@
         </div>
 
         <div data-role="page" id="race-detail">
-            <div data-role="header" style="text-align: center;">Kroegen race</div>
+            <div data-role="panel" id="menupanel" data-position="right">
+                <a href="#index">Home page</a> <br/>
+                <a href="#all-races">Find race </a> <br/>
+                <a id="logout" href="#"> Log out </a>
+            </div>
+            <div data-role="header">
+                <a href="#all-races" class="ui-btn ui-icon-arrow-l ui-btn-icon-left">Back </a>
+                <a href="#menupanel" class="ui-btn ui-icon-bars ui-btn-icon-left">Menu </a>
+                <h4 style="text-align: center;">Kroegen race </h4>
+            </div>
             <div role="main" class="ui-content">
                 <div id="race-id" style="display:none">
                 </div>
@@ -247,15 +282,19 @@
         </div> <!-- /page -->
 
         <div data-role="page" id="add-activity">
+            <div data-role="panel" id="menupanel" data-position="right">
+                <a href="#index">Home page</a> <br/>
+                <a href="#all-races">Find race </a> <br/>
+                <a id="logout" href="#"> Log out </a>
+            </div>
             <div data-role="header">
-                <span style="text-align: center; font-size: 28px; float: right;">Kroegen race </span>
+                <a href="#edit-race" class="ui-btn ui-icon-arrow-l ui-btn-icon-left">Back </a>
+                <a href="#menupanel" class="ui-btn ui-icon-bars ui-btn-icon-left">Menu </a>
+                <h4 style="text-align: center;">Kroegen race </h4>
             </div>
             <div role="main" class="ui-content" style="clear:both">
                 <i class="fa fa-spin fa-spinner" style="font-size: 40px; display:none" id="activity-loader"></i>
                 <div id="near-activities">
-                    <ul data-role="listview" data-split-icon="plus" data-split-theme="a">
-                        <li class="activity-list-item ui-li" id="ChIJu9v1XzcGx0cRcNHHstS8Vx4"><a>ITEM</a></li>
-                    </ul>
                 </div>
                 <a id="show-more-activities">Show more </a>
             </div>
@@ -265,14 +304,24 @@
         </div><!-- /page -->
 
         <div data-role="page" id="place-detail">
-            <div data-role="header">
-                <span style="text-align: center; font-size: 28px; float: right;">Kroegen race </span>
+            <div data-role="panel" id="menupanel" data-position="right">
+                <a href="#index">Home page</a> <br/>
+                <a href="#all-races">Find race </a> <br/>
+                <a id="logout" href="#"> Log out </a>
             </div>
-            <div role="main" class="ui-content" style="clear:both">
+            <div data-role="header">
+                <a href="#add-activity" class="ui-btn ui-icon-arrow-l ui-btn-icon-left">Back </a>
+                <a href="#menupanel" class="ui-btn ui-icon-bars ui-btn-icon-left">Menu </a>
+                <h4 style="text-align: center;">Kroegen race </h4>
+            </div>
+            <div role="main" class="ui-content">
                 <h1 id="place-name"></h1>
                 <h3 id="place-address"></h3>
                 <h4 id="place-phone"></h4>
                 <h4>Rated <span id="place-rating"></span> out of 5</h4>
+                <label for="add-activity-description">Beschrijving van de activiteit</label>
+                <input id="add-activity-description" name="add-activity-description" type="text"/>
+                <button class="add-place-to-race">Add to Race</button>
             </div>
             <div data-role="footer" data-position="fixed" data-tap-toggle="false" class="jqm-footer" style="text-align: center">
                 <p>Suzanne Jenniskens en Suzanne van Hees</p>
