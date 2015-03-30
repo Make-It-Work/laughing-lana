@@ -248,6 +248,7 @@ $(document).ready( function() {
         $.ajax({
             url: url,
             type:'GET',
+            dataType: 'json',
             success: function(result) {
                 $.each(result.results, function() {
                     html = '<li class="activity-list-item ui-li" id="' + this.id + '"><a>';
@@ -276,6 +277,7 @@ $(document).on("pagebeforeshow","#all-races", function(){
     $.ajax({
         url:'http://restrace-api.herokuapp.com/race',
         type:'GET',
+        dataType: 'json',
         success: function(result) {
             $('#list-races > ul').empty();
             $.each(result, function() {
@@ -369,6 +371,7 @@ $(document).on("pagebeforeshow", "#add-activity", function() {
             $.ajax({
                 url: reqUrl,
                 type:'GET',
+                dataType: 'json',
                 success: function(result) {
                     $('#near-activities > ul').empty();
                     $.each(result.results, function() {
@@ -405,20 +408,17 @@ $(document).on("pagebeforeshow", "#add-activity", function() {
     return false;
 });
 function buildDetailPage(item) {
-    alert("building page");
-    alert(item.attr("id"));
     var reqUrl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + item.attr("id") + "&key=AIzaSyAUxO0NYgx05X4imuydcq4iKr2kGtWjIZI";
     $.ajax({
         url: reqUrl,
         type:'GET',
         dataType: 'json',
         success: function(result) {
-            var jsonData = JSON.parse(result);
-            alert("i have a result");
-            $('#place-name').html(jsonData.name);
-            $('#place-address').html(jsonData.vicinity);
-            $('#place-phone').html(jsonData.international_phone_number);
-            $('#place-rating').html(jsonData.rating);
+            var jsonData = result.result;
+            $('#place-name').text(jsonData['name']);
+            $('#place-address').text(jsonData.vicinity);
+            $('#place-phone').text(jsonData.international_phone_number);
+            $('#place-rating').text(jsonData.rating);
         },
         error: function(request, status, error) {
             alert(error);
