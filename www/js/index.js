@@ -362,37 +362,39 @@ $(document).on("pagebeforeshow", "#add-activity", function() {
         function(position) {
             $("#activity-loader").show();
             alert(position.coords.latitude + ',' + position.coords.longitude);
-            var url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyAUxO0NYgx05X4imuydcq4iKr2kGtWjIZI&location=";
-            url += position.coords.latitude + ',' + position.coords.longitude;
-            url += "&radius=7500&type=cafe";
+            var reqUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyAUxO0NYgx05X4imuydcq4iKr2kGtWjIZI&location=";
+            reqUrl += position.coords.latitude + ',' + position.coords.longitude;
+            reqUrl += "&radius=7500&type=cafe";
+            alert(reqUrl);
             $.ajax({
-                url: url,
+                url: reqUrl,
                 type:'GET',
                 success: function(result) {
                     $('#near-activities > ul').empty();
                     $.each(result.results, function() {
-                        html = '<li class="activity-list-item ui-li" id="' + this.place_id + '"><a>';
+                        var html = '<li class="activity-list-item ui-li" id="' + this.place_id + '"><a>';
                         html += '<h2 class="title">' + this.name + '</h2>';
                         html += '<h3 class="description">' + this.vicinity + '</h3></a></li>';
                         $('#near-activities > ul').append(html);
                     });
                     $('#near-activities > ul').listview('refresh');
 
-                    $(".activity-list-item").click(function() {
-                        buildDetailPage(this);
+                    $(".activity-list-item").click(function(e) {
+                        buildDetailPage($(e.target);
                         $(":mobile-pagecontainer" ).pagecontainer( "change", "#place-detail");
                     });
-                    if (result.hasOwnProperty(next_page_token)) {
+                    if (result.hasOwnProperty("next_page_token")) {
                         var nextUrl = url + "&pagetoken=" + result.next_page_token;
                         $("#show-more-activities").show();
                         $("#show-more-activities").attr("id", nextUrl);
                     } else {
-                        $("show-more-activities").hide();
+                        $("#show-more-activities").hide();
                     }
                 },
                 error: function(request, status, error) {
                 }
             });
+    
             return false;
         },
         function() {
