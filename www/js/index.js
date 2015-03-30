@@ -363,6 +363,16 @@ $(document).on("pagebeforeshow", "#race-detail", function() {
         window.localStorage.setItem("currentRace", JSON.stringify(res));
         console.log(window.localStorage.getItem("currentRace"));
     });
+    var userUrl = "http://restrace-api.herokuapp.com/race/" + id + "/users";
+    $.get(userUrl, function (res) {
+        console.log(res);
+        $("#race-users").empty();
+        $.each(res, function() {
+            var html = '<li class="activity-list-item ui-li">' + this.local.email + '</li>';
+            $('#race-users').append(html);
+        });
+        $("#race-users").listview('refresh');
+    });
     return false;
 });
 $(document).on("pagebeforeshow", '#edit-race', function() {
