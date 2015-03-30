@@ -380,7 +380,7 @@ $(document).on("pagebeforeshow", "#add-activity", function() {
                     $('#near-activities > ul').listview('refresh');
 
                     $(".activity-list-item").click(function(e) {
-                        buildDetailPage($(e.target);
+                        buildDetailPage($(e.target));
                         $(":mobile-pagecontainer" ).pagecontainer( "change", "#place-detail");
                     });
                     if (result.hasOwnProperty("next_page_token")) {
