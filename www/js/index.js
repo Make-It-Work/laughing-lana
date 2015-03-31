@@ -414,7 +414,6 @@ $(document).on("pagebeforeshow", "#add-activity", function() {
                     $(".activity-list-item").click(function(e) {
                         console.log($(e.target).closest(".activity-list-item").attr("id"));
                         fillDetailPageLocalStorage($(e.target).closest(".activity-list-item").attr("id"));
-                        $(":mobile-pagecontainer" ).pagecontainer( "change", "#place-detail");
                     });
                     if (result.hasOwnProperty("next_page_token")) {
                         var nextUrl = reqUrl + "&pagetoken=" + result.next_page_token;
@@ -440,14 +439,15 @@ $(document).on("pagebeforeshow", "#add-activity", function() {
 function buildDetailPage() {
     var place = JSON.parse(window.localStorage.getItem("currentPlace"));
     console.log(JSON.stringify(place));
-    $('#place-name').text(place['name']);
+    $('#place-name').text(place.name);
     $('#place-address').text(place.vicinity);
     var number = place.international_phone_number.replace(/ /g, "");
     var phoneHtml = '<a href=tel:"' + number + '"> ' + number + " </a>"
     $('#place-phone').html(phoneHtml);
     $('#place-rating').text(place.rating);
     $('#place-website').html("<a href='" + place.website + "'> Visit website </a>");
-    $('.add-place-to-race').attr("id", place.place_id);   
+    $('.add-place-to-race').attr("id", place.place_id);  
+    $(":mobile-pagecontainer" ).pagecontainer( "change", "#place-detail"); 
 }
 
 function fillDetailPageLocalStorage(place_id) {
