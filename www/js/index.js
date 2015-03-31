@@ -76,7 +76,7 @@ $(document).ready( function() {
     document.addEventListener("backbutton", onBackKeyDown, false);
 
     function onBackKeyDown() {
-        var activePage = $.mobile.activePage[0].id;
+        var activePage = $(':mobile-pagecontainer').pagecontainer( 'getActivePage' ).attr( 'id' );
         console.log(activePage);
         if(activepage == "index") {
             navigator.app.exitApp();
@@ -159,11 +159,11 @@ $(document).ready( function() {
         return false;
     });
 
-    var activityArray = [];
     $(".activity-content").on("swipeleft", function() {
         alert("swipeleft");
         curId = parseInt($(".activity-content").attr("id"));
         // for (var i = 0; i < activityArray.length; i++) {
+            var activityArray = JSON.parse(window.localStorage.getItem("currentRaceActivities"));
             if (activityArray[curId+1] !== undefined) {
                 alert('left if');
                 $(".activity-content").hide();
@@ -180,6 +180,7 @@ $(document).ready( function() {
         alert("swiperight");
         curId = parseInt($(".activity-content").attr("id"));
         // for (var i = 0; i < activityArray.length; i++) {
+            var activityArray = JSON.parse(window.localStorage.getItem("currentRaceActivities"));
             if (activityArray[curId-1]!== undefined) {
                 alert("right if");
                 $(".activity-content").hide();
@@ -413,13 +414,13 @@ $(document).on("pagebeforeshow", "#race-detail", function() {
     $("#race-users").listview('refresh');
 
     $(".activity-content").attr("id", 0);
-    $(window).on("raceDetailInitialized",function(){
+    // $(window).on("raceDetailInitialized",function(){
         var activityArray = JSON.parse(window.localStorage.getItem("currentRaceActivities"));
         console.log(activityArray);
         $("#activity-place-name").text(activityArray[0].PlaceName); 
         $("#activity-place-adress").text(activityArray[0].PlaceAdress);
         $("#activity-description").text(activityArray[0].description);
-    });
+    //});
 });
 $(document).on("pagebeforeshow", '#edit-race', function() {
     var race = JSON.parse(window.localStorage.getItem("currentRace"));
