@@ -78,7 +78,7 @@ $(document).ready( function() {
     function onBackKeyDown() {
         var activePage = $(':mobile-pagecontainer').pagecontainer( 'getActivePage' ).attr( 'id' );
         console.log(activePage);
-        if(activepage == "index") {
+        if(activePage == "index") {
             navigator.app.exitApp();
         }
     }
