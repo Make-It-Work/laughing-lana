@@ -436,6 +436,8 @@ $(document).on("pagebeforeshow", "#add-activity", function() {
     return false;
 });
 function buildDetailPage() {
+    var race = JSON.parse(window.localStorage.getItem("currentRace"));
+    console.log(race);
     $('#place-name').text(window.localStorage.getItem("currentRace")['name']);
     $('#place-address').text(window.localStorage.getItem("currentRace").vicinity);
     var number = window.localStorage.getItem("currentRace").international_phone_number.replace(/ /g, "");
@@ -454,7 +456,7 @@ function fillDetailPageLocalStorage(place_id) {
         dataType: 'json',
         success: function(result) {
             var jsonData = result.result;
-            window.localStorage.setItem("currentPlace", jsonData);
+            window.localStorage.setItem("currentPlace", JSON.stringify(jsonData));
         },
         error: function(request, status, error) {
             alert(error);
