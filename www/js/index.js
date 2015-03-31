@@ -445,9 +445,9 @@ function buildDetailPage(item) {
             var jsonData = result.result;
             $('#place-name').text(jsonData['name']);
             $('#place-address').text(jsonData.vicinity);
-            var phoneHtml = '<a href=tel:"' + jsonData.international_phone_number + '"> ' + jsonData.international_phone_number + " </a>"
+            var number = jsonData.international_phone_number.replace(" ", "");
+            var phoneHtml = '<a href=tel:"' + number + '"> ' + number + " </a>"
             $('#place-phone').html(phoneHtml);
-            //$('#place-phone').text(jsonData.international_phone_number);
             $('#place-rating').text(jsonData.rating);
             $('.add-place-to-race').attr("id", item.attr("id"));
         },
