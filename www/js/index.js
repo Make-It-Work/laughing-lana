@@ -282,7 +282,7 @@ $(document).ready( function() {
                     $("#show-more-activities").hide();
                 }
                 $(".activity-list-item").click(function(event) {
-                    buildDetailPage($(e.target).closest(".activity-list-item"));
+                    fillDetailPageLocalStorage($(e.target).closest(".activity-list-item").attr("id"));
                     $(":mobile-pagecontainer" ).pagecontainer( "change", "#place-detail");
                 });
             }
@@ -435,28 +435,36 @@ $(document).on("pagebeforeshow", "#add-activity", function() {
     $('#activity-loader').hide();
     return false;
 });
-function buildDetailPage(item) {
-    var reqUrl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + item.attr("id") + "&key=AIzaSyAUxO0NYgx05X4imuydcq4iKr2kGtWjIZI";
+function buildDetailPage() {
+    $('#place-name').text(window.localStorage.getItem("currentRace")['name']);
+    $('#place-address').text(window.localStorage.getItem("currentRace").vicinity);
+    var number = window.localStorage.getItem("currentRace").international_phone_number.replace(/ /g, "");
+    var phoneHtml = '<a href=tel:"' + number + '"> ' + number + " </a>"
+    $('#place-phone').html(phoneHtml);
+    $('#place-rating').text(window.localStorage.getItem("currentRace").rating);
+    $('#place-website').html("<a href='" + window.localStorage.getItem("currentRace").website + "'> Visit website </a>");
+    $('.add-place-to-race').attr("id", window.localStorage.getItem("currentRace").place_id);   
+}
+
+function fillDetailPageLocalStorage(place_id) {
+    var reqUrl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + place_id + "&key=AIzaSyAUxO0NYgx05X4imuydcq4iKr2kGtWjIZI";
     $.ajax({
         url: reqUrl,
         type:'GET',
         dataType: 'json',
         success: function(result) {
             var jsonData = result.result;
-            $('#place-name').text(jsonData['name']);
-            $('#place-address').text(jsonData.vicinity);
-            var number = jsonData.international_phone_number.replace(/ /g, "");
-            var phoneHtml = '<a href=tel:"' + number + '"> ' + number + " </a>"
-            $('#place-phone').html(phoneHtml);
-            $('#place-rating').text(jsonData.rating);
-            $('#place-website').html("<a href='" + jsonData.website + "'> Visit website </a>");
-            $('.add-place-to-race').attr("id", item.attr("id"));
+            window.localStorage.setItem("currentPlace", jsonData);
         },
         error: function(request, status, error) {
             alert(error);
         }
     });
 }
+
+$(document).on("pagebeforeshow", "#place-detail", function() {
+    buildDetailPage();
+});
 
 $('#place-website').click(function(event) {
     event.preventDefault();
