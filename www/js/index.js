@@ -298,6 +298,9 @@ $(document).ready( function() {
 });
 
 $(document).on("pagebeforeshow","#all-races", function(){
+    window.localStorage.removeItem("currentRace");
+    window.localStorage.removeItem("currentRaceUsers");
+    window.localStorage.removeItem("currentRaceActivities");
     $.ajax({
         url:'http://restrace-api.herokuapp.com/race',
         type:'GET',
@@ -329,37 +332,44 @@ function fillLocalRaceStorage(race_id) {
     var requestUrl = url.concat(race_id);
     $.get(requestUrl, function(res) {
         window.localStorage.setItem("currentRace", JSON.stringify(res));
+        $(window).trigger("recievedRace");
     });
-    var userUrl = "http://restrace-api.herokuapp.com/race/" + race_id + "/users";
-    $.get(userUrl, function (res) {
-        window.localStorage.setItem("currentRaceUsers", JSON.stringify(res));
+    $(window).on("recievedRace", function() {
+        var userUrl = "http://restrace-api.herokuapp.com/race/" + race_id + "/users";
+        $.get(userUrl, function (res) {
+            window.localStorage.setItem("currentRaceUsers", JSON.stringify(res));
+            $(window).trigger("recievedRaceUsers");
+        });
     });
-    var activityUrl = "http://restrace-api.herokuapp.com/race/" + race_id + "/activities";
-    $.ajax({
-        url: activityUrl,
-        type: "GET",
-        dataType: "json",
-        success: function (res) {
-            var activities = [];
-            $.each(res, function() {
-                var currentActivity = this;
-                var newUrl = "http://restrace-api.herokuapp.com/activity/" + currentActivity._id;
-                $.ajax({ 
-                    url: newUrl,
-                    type: "GET",
-                    dataType: "json", 
-                    success: function (response) {
-                        currentActivity.PlaceName = response[1].result.name;
-                        currentActivity.PlaceAdress = response[1].result.vicinity;
-                        activities.push(currentActivity);
-                    },
-                    async: false
+    $(window).on("recievedRaceUsers" , function() {
+        var activityUrl = "http://restrace-api.herokuapp.com/race/" + race_id + "/activities";
+        $.ajax({
+            url: activityUrl,
+            type: "GET",
+            dataType: "json",
+            success: function (res) {
+                var activities = [];
+                $.each(res, function() {
+                    var currentActivity = this;
+                    var newUrl = "http://restrace-api.herokuapp.com/activity/" + currentActivity._id;
+                    $.ajax({ 
+                        url: newUrl,
+                        type: "GET",
+                        dataType: "json", 
+                        success: function (response) {
+                            currentActivity.PlaceName = response[1].result.name;
+                            currentActivity.PlaceAdress = response[1].result.vicinity;
+                            activities.push(currentActivity);
+                        },
+                        async: false
+                    });
                 });
-            });
-            window.localStorage.setItem("currentRaceActivities", JSON.stringify(activities));
-            $(window).trigger("raceDetailInitialized");
-        }
+                window.localStorage.setItem("currentRaceActivities", JSON.stringify(activities));
+                $(window).trigger("raceDetailInitialized");
+            }
+        });
     });
+    
     $( ":mobile-pagecontainer" ).pagecontainer( "change", "#race-detail");
 }
 
@@ -378,52 +388,59 @@ $(document).on("pagebeforeshow", "#loginPage", function() {
     }
 });
 $(document).on("pagebeforeshow", "#race-detail", function() {
-    
-    $(".edit-race").hide();
-    $(".join-race").hide();
-    $(".leave-race").hide();
-    var currentRace = JSON.parse(window.localStorage.getItem("currentRace"));
-    var race_id = currentRace._id;
-    var users = JSON.parse(window.localStorage.getItem("currentRaceUsers"));
-    var joinedRace = false;
-    $.each(users, function() {
-        if(this._id == window.localStorage.getItem("userId")) {
-            joinedRace = true;
-            return false;
+    $(window).on("raceDetailInitialized",function(){
+        $(".edit-race").hide();
+        $(".join-race").hide();
+        $(".leave-race").hide();
+        var currentRace = JSON.parse(window.localStorage.getItem("currentRace"));
+        var race_id = currentRace._id;
+        var users = JSON.parse(window.localStorage.getItem("currentRaceUsers"));
+        var joinedRace = false;
+        $.each(users, function() {
+            if(this._id == window.localStorage.getItem("userId")) {
+                joinedRace = true;
+                return false;
+            }
+        });
+        console.log(users);
+        if (currentRace.owner == window.localStorage.getItem("userId")) {
+            $(".edit-race").show();
+            $(".edit-race").attr("id", race_id);
+            $(".delete-race").show();
+            $("#delete-race-id").html(race_id);
+        } else if(joinedRace) {
+            $(".leave-race").show();
+            $(".leave-race").attr("id", race_id);
+            raceStart = new Date(currentRace.startDateTime);
+            raceEnd = new Date(currentRace.endDateTime);
+            curDate = new Date();
+            if (curDate >= raceStart && curDate < raceEnd) {
+                $('.tag').show();
+                $('.tag').attr('id', race_id);
+            }
+        } else {
+            $(".join-race").show();
+            $(".join-race").attr("id", race_id);
         }
-    });
-    console.log(users);
-    if (currentRace.owner == window.localStorage.getItem("userId")) {
-        $(".edit-race").show();
-        $(".edit-race").attr("id", race_id);
-        $(".delete-race").show();
-        $("#delete-race-id").html(race_id);
-    } else if(joinedRace) {
-        $(".leave-race").show();
-        $(".leave-race").attr("id", race_id);
-    } else {
-        $(".join-race").show();
-        $(".join-race").attr("id", race_id);
-    }
-    
-    $('#race-id').html(race_id);
-    $("#race-title").html(currentRace.name);
-    $("#race-description").html(currentRace.description);
-    //User part of view
-    $("#race-users").empty();
-    $.each(users, function() {
-        var html = '<li class=" ui-li">' + this.local.email + '</li>';
-        $('#race-users').append(html);
-    });
-    $("#race-users").listview('refresh');
+        
+        $('#race-id').html(race_id);
+        $("#race-title").html(currentRace.name);
+        $("#race-description").html(currentRace.description);
+        //User part of view
+        $("#race-users").empty();
+        $.each(users, function() {
+            var html = '<li class=" ui-li">' + this.local.email + '</li>';
+            $('#race-users').append(html);
+        });
+        $("#race-users").listview('refresh');
 
-    $(".activity-content").attr("id", 0);
-    // $(window).on("raceDetailInitialized",function(){
+        $(".activity-content").attr("id", 0);
+    
         var activityArray = JSON.parse(window.localStorage.getItem("currentRaceActivities"));
         $("#activity-place-name").text(activityArray[0].PlaceName); 
         $("#activity-place-adress").text(activityArray[0].PlaceAdress);
         $("#activity-description").text(activityArray[0].description);
-    //});
+    });
 });
 $(document).on("pagebeforeshow", '#edit-race', function() {
     var race = JSON.parse(window.localStorage.getItem("currentRace"));
