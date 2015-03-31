@@ -307,19 +307,10 @@ $(document).on("pagebeforeshow","#all-races", function(){
                 $('#list-races > ul').append(html);
             });
             $('#list-races > ul').listview('refresh');
-            $('.race-list-item').click(function() {
-                $(".edit-race").hide();
-                $(".join-race").hide();
-                $(".leave-race").hide();
-                var id = $(this).attr("id");
-                var selector = "li[id=" + id + "] > a > .title";
-                var title = $(selector).text();
-                var selector = "li[id=" + id + "] > a > .description";
-                var description = $(selector).text();
-                $('#race-id').html(id);
-                $("#race-title").html(title);
-                $("#race-description").html(description);
-                $( ":mobile-pagecontainer" ).pagecontainer( "change", "#race-detail");
+            $('.race-list-item').click(function(event) {
+                console.log('click');
+                fillLocalRaceStorage($(event.target).closest('.race-list-item').attr("id"));
+                
                 return false;
             });
         },
@@ -328,6 +319,24 @@ $(document).on("pagebeforeshow","#all-races", function(){
     });
     return false;
 });
+
+function fillLocalRaceStorage(race_id) {
+    console.log("fill local race");
+    console.log(race_id);
+    var url = "http://restrace-api.herokuapp.com/race/";
+    var requestUrl = url.concat(race_id);
+    $.get(requestUrl, function(res) {
+        window.localStorage.setItem("currentRace", JSON.stringify(res));
+        console.log(window.localStorage.getItem("currentRace"));
+    });
+    var userUrl = "http://restrace-api.herokuapp.com/race/" + race_id + "/users";
+    $.get(userUrl, function (res) {
+        console.log(res);
+        window.localStorage.setItem("currentRaceUsers", JSON.stringify(res));
+    });
+
+    $( ":mobile-pagecontainer" ).pagecontainer( "change", "#race-detail");
+}
 
 $(document).on("pagebeforeshow", "div[data-role='page']:not(div[id='loginPage'])", function() {
     if(window.localStorage.getItem("username") === null) {
@@ -344,36 +353,38 @@ $(document).on("pagebeforeshow", "#loginPage", function() {
     }
 });
 $(document).on("pagebeforeshow", "#race-detail", function() {
-    var id = $('#race-id').text();
-    var url = "http://restrace-api.herokuapp.com/race/";
-    var requestUrl = url.concat(id);
-    console.log("url: " + requestUrl);
-    $.get(requestUrl, function(res) {
-        if (res.owner == window.localStorage.getItem("userId")) {
-            $(".edit-race").show();
-            $(".edit-race").attr("id", id);
-            $(".delete-race").show();
-            $("#delete-race-id").html(id);
-        } else if($.inArray(window.localStorage.getItem("userId"), res.users) >= 0) {
-            $(".leave-race").show();
-            $(".leave-race").attr("id", id);
-        } else {
-            $(".join-race").show();
-            $(".join-race").attr("id", id);
-        }
-        window.localStorage.setItem("currentRace", JSON.stringify(res));
-        console.log(window.localStorage.getItem("currentRace"));
+    
+    $(".edit-race").hide();
+    $(".join-race").hide();
+    $(".leave-race").hide();
+    var currentRace = JSON.parse(window.localStorage.getItem("currentRace"));
+    var race_id = currentRace._id;
+    var users = JSON.parse(window.localStorage.getItem("currentRaceUsers"));
+    if (currentRace.owner == window.localStorage.getItem("userId")) {
+        $(".edit-race").show();
+        $(".edit-race").attr("id", race_id);
+        $(".delete-race").show();
+        $("#delete-race-id").html(race_id);
+    } else if($.inArray(window.localStorage.getItem("userId"), users) >= 0) {
+        $(".leave-race").show();
+        $(".leave-race").attr("id", race_id);
+    } else {
+        $(".join-race").show();
+        $(".join-race").attr("id", race_id);
+    }
+    
+    $('#race-id').html(race_id);
+    $("#race-title").html(currentRace.name);
+    $("#race-description").html(currentRace.description);
+    //User part of view
+    $("#race-users").empty();
+    
+    $.each(users, function() {
+        var html = '<li class=" ui-li">' + this.local.email + '</li>';
+        $('#race-users').append(html);
     });
-    var userUrl = "http://restrace-api.herokuapp.com/race/" + id + "/users";
-    $.get(userUrl, function (res) {
-        console.log(res);
-        $("#race-users").empty();
-        $.each(res, function() {
-            var html = '<li class=" ui-li">' + this.local.email + '</li>';
-            $('#race-users').append(html);
-        });
-        $("#race-users").listview('refresh');
-    });
+    $("#race-users").listview('refresh');
+
     return false;
 });
 $(document).on("pagebeforeshow", '#edit-race', function() {
