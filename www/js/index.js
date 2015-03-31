@@ -323,20 +323,20 @@ function fillLocalRaceStorage(race_id) {
         type: "GET",
         dataType: "json",
         success: function (res) {
+            var currentActivity
             $.each(res, function() {
-                var currentActivity = this;
+                currentActivity = this;
                 var newUrl = "http://restrace-api.herokuapp.com/activity/" + currentActivity._id;
                 $.get(newUrl, function (response) {
                     currentActivity.PlaceName = response[1].result.name;
                     currentActivity.PlaceAdress = response[1].result.vicinity;
                 });
-                
             });
-            console.log(res);
-            window.localStorage.setItem("currentRaceActivities", JSON.stringify(res));
+            window.localStorage.setItem("currentRaceActivities", JSON.stringify(currentActivity));
+            console.log('found the activities');
+            $(window).trigger("raceDetailInitialized");
         }
     });
-    activityArray = JSON.parse(window.localStorage.getItem("currentRaceActivities"));
     $( ":mobile-pagecontainer" ).pagecontainer( "change", "#race-detail");
 }
 
@@ -386,10 +386,14 @@ $(document).on("pagebeforeshow", "#race-detail", function() {
     });
     $("#race-users").listview('refresh');
 
-    var activities = JSON.parse(window.localStorage.getItem("currentRaceActivities"));
     $(".activity-content").attr("id", 0);
-
-    return false;
+    $(window).on("raceDetailInitialized",function(){
+        var activityArray = JSON.parse(window.localStorage.getItem("currentRaceActivities"));
+        console.log(activityArray);
+        $("#activity-place-name").text(activityArray[0].PlaceName); 
+        $("#activity-place-adress").text(activityArray[0].PlaceAdress);
+        $("#activity-description").text(activityArray[0].description);
+    });
 });
 $(document).on("pagebeforeshow", '#edit-race', function() {
     var race = JSON.parse(window.localStorage.getItem("currentRace"));
