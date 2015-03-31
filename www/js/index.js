@@ -133,7 +133,6 @@ $(document).ready( function() {
                 endDateTime: $('#editraceendtime').val()
             },
             success: function(res) {
-                console.log(res);
                 if(res.indexOf("succesfully") >= 0) {
                     $( ":mobile-pagecontainer" ).pagecontainer("change", "#all-races");
                 } else if(res.message == "Validation failed") {
@@ -150,47 +149,38 @@ $(document).ready( function() {
         return false;
     });
 
-    var activityArray = [
-        {
-            "id": 1,
-            "description": "this is awesome",
-            "PlaceName": "'t Paultje",
-            "PlaceAdress": "Lepelstraat x"
-        },
-        {
-            "id": 2,
-            "description": "this is even more awesome",
-            "PlaceName": "Skybar",
-            "PlaceAdress": "Onderwijsboulevard 88"
-        }
-    ]
+    var activityArray = [];
     $(".activity-content").on("swipeleft", function() {
+        alert("swipeleft");
         curId = parseInt($(".activity-content").attr("id"));
-        for (var i = 0; i < activityArray.length; i++) {
-            if (activityArray[i].id === curId + 1) {
+        // for (var i = 0; i < activityArray.length; i++) {
+            if (activityArray[curId+1]) {
+                alert('left if');
                 $(".activity-content").hide();
-                $(".activity-content").attr("id", activityArray[i].id);
-                $("#activity-place-name").text(activityArray[i].PlaceName); 
-                $("#activity-place-adress").text(activityArray[i].PlaceAdress);
-                $("#activity-description").text(activityArray[i].description);
+                $(".activity-content").attr("id", curId +1);
+                $("#activity-place-name").text(activityArray[curId +1].PlaceName); 
+                $("#activity-place-adress").text(activityArray[curId+1].PlaceAdress);
+                $("#activity-description").text(activityArray[curId +1].description);
                 $('.activity-content').fadeIn(400);
                 return;
             }
-        }
+        // }
     });
     $(".activity-content").on("swiperight", function() {
-        curId = $(".activity-content").attr("id");
-        for (var i = 0; i < activityArray.length; i++) {
-            if (activityArray[i].id === curId - 1) {
+        alert("swiperight");
+        curId = parseInt($(".activity-content").attr("id"));
+        // for (var i = 0; i < activityArray.length; i++) {
+            if (activityArray[curId-1]) {
+                alert("right if");
                 $(".activity-content").hide();
-                $(".activity-content").attr("id", activityArray[i].id);
-                $("#activity-place-name").text(activityArray[i].PlaceName); 
-                $("#activity-place-adress").text(activityArray[i].PlaceAdress);
-                $("#activity-description").text(activityArray[i].description);
+                $(".activity-content").attr("id", curId -1);
+                $("#activity-place-name").text(activityArray[curId -1].PlaceName); 
+                $("#activity-place-adress").text(activityArray[curId-1].PlaceAdress);
+                $("#activity-description").text(activityArray[curId -1].description);
                 $('.activity-content').fadeIn(400);
                 return;
             }
-        }
+        // }
     });
     $('.join-race').click(function() {
         var race_id = $(this).attr("id");
@@ -229,7 +219,6 @@ $(document).ready( function() {
             url: requestUrl,
             type:'DELETE',
             success: function(res) {
-                console.log(res);
                 if(res.msg.indexOf("succesfully") >= 0) {
                     $( ":mobile-pagecontainer" ).pagecontainer("change", "#all-races");
                 } else if(res.message == "Validation failed") {
@@ -249,8 +238,8 @@ $(document).ready( function() {
         var activityAdd = postActivityRequest($(this).attr("id"));
         if (activityAdd !== false) {
             var url = "http://restrace-api.herokuapp.com/race/" + JSON.parse(window.localStorage.getItem("currentRace"))._id + '/activity/' + activityAdd;
-            console.log("add url: " + url);
             $.post(url, {}, function() {
+                fillLocalRaceStorage(JSON.parse(window.localStorage.getItem("currentRace"))._id);
                 $( ":mobile-pagecontainer" ).pagecontainer("change", "#add-activity");
             }, 'json');
         } else {
@@ -282,7 +271,6 @@ $(document).ready( function() {
                     $("#show-more-activities").hide();
                 }
                 $(".activity-list-item").click(function(event) {
-                    console.log($(e.target).closest(".activity-list-item").attr("id"));
                     fillDetailPageLocalStorage($(e.target).closest(".activity-list-item").attr("id"));
                     $(":mobile-pagecontainer" ).pagecontainer( "change", "#place-detail");
                 });
@@ -308,7 +296,6 @@ $(document).on("pagebeforeshow","#all-races", function(){
             });
             $('#list-races > ul').listview('refresh');
             $('.race-list-item').click(function(event) {
-                console.log('click');
                 fillLocalRaceStorage($(event.target).closest('.race-list-item').attr("id"));
                 
                 return false;
@@ -321,20 +308,35 @@ $(document).on("pagebeforeshow","#all-races", function(){
 });
 
 function fillLocalRaceStorage(race_id) {
-    console.log("fill local race");
-    console.log(race_id);
     var url = "http://restrace-api.herokuapp.com/race/";
     var requestUrl = url.concat(race_id);
     $.get(requestUrl, function(res) {
         window.localStorage.setItem("currentRace", JSON.stringify(res));
-        console.log(window.localStorage.getItem("currentRace"));
     });
     var userUrl = "http://restrace-api.herokuapp.com/race/" + race_id + "/users";
     $.get(userUrl, function (res) {
-        console.log(res);
         window.localStorage.setItem("currentRaceUsers", JSON.stringify(res));
     });
-
+    var activityUrl = "http://restrace-api.herokuapp.com/race/" + race_id + "/activities";
+    $.ajax({
+        url: activityUrl,
+        type: "GET",
+        dataType: "json",
+        success: function (res) {
+            $.each(res, function() {
+                var currentActivity = this;
+                var newUrl = "http://restrace-api.herokuapp.com/activity/" + currentActivity._id;
+                $.get(newUrl, function (response) {
+                    currentActivity.PlaceName = response[1].result.name;
+                    currentActivity.PlaceAdress = response[1].result.vicinity;
+                });
+                
+            });
+            console.log(res);
+            window.localStorage.setItem("currentRaceActivities", JSON.stringify(res));
+        }
+    });
+    activityArray = JSON.parse(window.localStorage.getItem("currentRaceActivities"));
     $( ":mobile-pagecontainer" ).pagecontainer( "change", "#race-detail");
 }
 
@@ -378,18 +380,19 @@ $(document).on("pagebeforeshow", "#race-detail", function() {
     $("#race-description").html(currentRace.description);
     //User part of view
     $("#race-users").empty();
-    
     $.each(users, function() {
         var html = '<li class=" ui-li">' + this.local.email + '</li>';
         $('#race-users').append(html);
     });
     $("#race-users").listview('refresh');
 
+    var activities = JSON.parse(window.localStorage.getItem("currentRaceActivities"));
+    $(".activity-content").attr("id", 0);
+
     return false;
 });
 $(document).on("pagebeforeshow", '#edit-race', function() {
     var race = JSON.parse(window.localStorage.getItem("currentRace"));
-    console.log(race);
     $("#editraceid").val(race._id);
     $("#editracename").val(race.name);
     $("#editracedescription").val(race.description);
@@ -423,16 +426,8 @@ $(document).on("pagebeforeshow", "#add-activity", function() {
                     $('#near-activities > ul').listview('refresh');
 
                     $(".activity-list-item").click(function(e) {
-                        console.log($(e.target).closest(".activity-list-item").attr("id"));
                         fillDetailPageLocalStorage($(e.target).closest(".activity-list-item").attr("id"));
                     });
-                    if (result.hasOwnProperty("next_page_token")) {
-                        var nextUrl = reqUrl + "&pagetoken=" + result.next_page_token;
-                        $("#show-more-activities").show();
-                        $("#show-more-activities").attr("id", nextUrl);
-                    } else {
-                        $("#show-more-activities").hide();
-                    }
                 },
                 error: function(request, status, error) {
                 }
@@ -449,7 +444,6 @@ $(document).on("pagebeforeshow", "#add-activity", function() {
 });
 function buildDetailPage() {
     var place = JSON.parse(window.localStorage.getItem("currentPlace"));
-    console.log(JSON.stringify(place));
     $('#place-name').text(place.name);
     $('#place-address').text(place.vicinity);
     var number = place.international_phone_number.replace(/ /g, "");
@@ -462,7 +456,6 @@ function buildDetailPage() {
 }
 
 function fillDetailPageLocalStorage(place_id) {
-    console.log("filling detail page");
     var reqUrl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + place_id + "&key=AIzaSyAUxO0NYgx05X4imuydcq4iKr2kGtWjIZI";
     $.ajax({
         url: reqUrl,
@@ -470,7 +463,6 @@ function fillDetailPageLocalStorage(place_id) {
         dataType: 'json',
         success: function(result) {
             var jsonData = result.result;
-            console.log(JSON.stringify(jsonData));
             window.localStorage.setItem("currentPlace", JSON.stringify(jsonData));
             buildDetailPage();
         },
@@ -493,10 +485,9 @@ $('#place-website').click(function(event) {
 function postActivityRequest(place_id) {
     alert("gonna post");
     var reqData = JSON.stringify({
-            google_id: place_id,
-            description: $("#add-activity-description").val()
-        });
-    console.log(reqData);
+        google_id: place_id,
+        description: $("#add-activity-description").val()
+    });
     $.ajax({
         type:"POST",
         url: "http://restrace-api.herokuapp.com/activity",
@@ -550,7 +541,6 @@ function postActivityRequest(place_id) {
                 var splitString = responseString.split("id");
                 var activity_id = splitString[1].slice(0, splitString[1].indexOf(" "));
                 var url = "http://restrace-api.herokuapp.com/race/" + JSON.parse(window.localStorage.getItem("currentRace"))._id + '/activity/' + activity_id;
-                console.log("add url: " + url);
                 $.post(url, {}, function() {
                     $( ":mobile-pagecontainer" ).pagecontainer("change", "#add-activity");
                 }, 'json');
