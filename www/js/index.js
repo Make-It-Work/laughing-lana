@@ -332,17 +332,33 @@ function fillLocalRaceStorage(race_id) {
         type: "GET",
         dataType: "json",
         success: function (res) {
-            var currentActivity
+            var activities = [];
             $.each(res, function() {
-                currentActivity = this;
+                var currentActivity = this;
                 var newUrl = "http://restrace-api.herokuapp.com/activity/" + currentActivity._id;
-                $.get(newUrl, function (response) {
-                    currentActivity.PlaceName = response[1].result.name;
-                    currentActivity.PlaceAdress = response[1].result.vicinity;
-                    $(window).trigger("raceDetailInitialized");
+                $.ajax({ 
+                    url: newUrl,
+                    type: "GET",
+                    dataType: "json", 
+                    success: function (response) {
+                        console.log("in success");
+                        currentActivity.PlaceName = response[1].result.name;
+                        currentActivity.PlaceAdress = response[1].result.vicinity;
+                        activities.push(currentActivity);
+                        console.log("curAct: " + currentActivity);
+                    },
+                    error: function(request, status, error) {
+                        console.log("fail: " + error);
+                    },
+                    complete: function (jqXHR) {
+                        console.log(jqXHR);
+                        console.log("complete");
+                    },
+                    async: false
                 });
             });
-            window.localStorage.setItem("currentRaceActivities", JSON.stringify(currentActivity));
+            console.log("acts: " + activities);
+            window.localStorage.setItem("currentRaceActivities", JSON.stringify(activities));
             $(window).trigger("raceDetailInitialized");
         }
     });
