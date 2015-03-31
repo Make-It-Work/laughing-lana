@@ -449,6 +449,7 @@ function buildDetailPage(item) {
             var phoneHtml = '<a href=tel:"' + number + '"> ' + number + " </a>"
             $('#place-phone').html(phoneHtml);
             $('#place-rating').text(jsonData.rating);
+            $('#place-website').html("<a href='" + jsonData.website + "'> Visit website </a>");
             $('.add-place-to-race').attr("id", item.attr("id"));
         },
         error: function(request, status, error) {
@@ -456,6 +457,12 @@ function buildDetailPage(item) {
         }
     });
 }
+
+$('#place-website').click(function(event) {
+    event.preventDefault();
+    var url = event.target.closest('#place-website').attr("href");
+    window.open(url, '_system');
+});
 
 function postActivityRequest(place_id) {
     alert("gonna post");
