@@ -282,6 +282,7 @@ $(document).ready( function() {
                     $("#show-more-activities").hide();
                 }
                 $(".activity-list-item").click(function(event) {
+                    console.log($(e.target).closest(".activity-list-item").attr("id"));
                     fillDetailPageLocalStorage($(e.target).closest(".activity-list-item").attr("id"));
                     $(":mobile-pagecontainer" ).pagecontainer( "change", "#place-detail");
                 });
@@ -368,7 +369,7 @@ $(document).on("pagebeforeshow", "#race-detail", function() {
         console.log(res);
         $("#race-users").empty();
         $.each(res, function() {
-            var html = '<li class="activity-list-item ui-li">' + this.local.email + '</li>';
+            var html = '<li class=" ui-li">' + this.local.email + '</li>';
             $('#race-users').append(html);
         });
         $("#race-users").listview('refresh');
@@ -411,7 +412,8 @@ $(document).on("pagebeforeshow", "#add-activity", function() {
                     $('#near-activities > ul').listview('refresh');
 
                     $(".activity-list-item").click(function(e) {
-                        buildDetailPage($(e.target).closest('.activity-list-item'));
+                        console.log($(e.target).closest(".activity-list-item").attr("id"));
+                        fillDetailPageLocalStorage($(e.target).closest(".activity-list-item").attr("id"));
                         $(":mobile-pagecontainer" ).pagecontainer( "change", "#place-detail");
                     });
                     if (result.hasOwnProperty("next_page_token")) {
@@ -436,19 +438,20 @@ $(document).on("pagebeforeshow", "#add-activity", function() {
     return false;
 });
 function buildDetailPage() {
-    var race = JSON.parse(window.localStorage.getItem("currentRace"));
-    console.log(race);
-    $('#place-name').text(window.localStorage.getItem("currentRace")['name']);
-    $('#place-address').text(window.localStorage.getItem("currentRace").vicinity);
-    var number = window.localStorage.getItem("currentRace").international_phone_number.replace(/ /g, "");
+    var place = JSON.parse(window.localStorage.getItem("currentPlace"));
+    console.log(JSON.stringify(place));
+    $('#place-name').text(place['name']);
+    $('#place-address').text(place.vicinity);
+    var number = place.international_phone_number.replace(/ /g, "");
     var phoneHtml = '<a href=tel:"' + number + '"> ' + number + " </a>"
     $('#place-phone').html(phoneHtml);
-    $('#place-rating').text(window.localStorage.getItem("currentRace").rating);
-    $('#place-website').html("<a href='" + window.localStorage.getItem("currentRace").website + "'> Visit website </a>");
-    $('.add-place-to-race').attr("id", window.localStorage.getItem("currentRace").place_id);   
+    $('#place-rating').text(place.rating);
+    $('#place-website').html("<a href='" + place.website + "'> Visit website </a>");
+    $('.add-place-to-race').attr("id", place.place_id);   
 }
 
 function fillDetailPageLocalStorage(place_id) {
+    console.log("filling detail page");
     var reqUrl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + place_id + "&key=AIzaSyAUxO0NYgx05X4imuydcq4iKr2kGtWjIZI";
     $.ajax({
         url: reqUrl,
@@ -456,7 +459,9 @@ function fillDetailPageLocalStorage(place_id) {
         dataType: 'json',
         success: function(result) {
             var jsonData = result.result;
+            console.log(JSON.stringify(jsonData));
             window.localStorage.setItem("currentPlace", JSON.stringify(jsonData));
+            buildDetailPage();
         },
         error: function(request, status, error) {
             alert(error);
