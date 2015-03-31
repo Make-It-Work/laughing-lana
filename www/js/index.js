@@ -73,6 +73,15 @@ function handleLogin(user, pwd) {
 
 $(document).ready( function() {
 
+    document.addEventListener("backbutton", onBackKeyDown, false);
+
+    function onBackKeyDown() {
+        var activePage = $.mobile.pageContainer.pagecontainer("getActivePage");
+        if(activepage[0].id == "index") {
+            navigator.app.exitApp();
+        }
+    }
+
     $('#logout').on("click", function(e) {
         window.localStorage.removeItem("username");
         window.localStorage.removeItem("password");
@@ -330,10 +339,10 @@ function fillLocalRaceStorage(race_id) {
                 $.get(newUrl, function (response) {
                     currentActivity.PlaceName = response[1].result.name;
                     currentActivity.PlaceAdress = response[1].result.vicinity;
+                    $(window).trigger("raceDetailInitialized");
                 });
             });
             window.localStorage.setItem("currentRaceActivities", JSON.stringify(currentActivity));
-            console.log('found the activities');
             $(window).trigger("raceDetailInitialized");
         }
     });
