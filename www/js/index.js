@@ -76,8 +76,9 @@ $(document).ready( function() {
     document.addEventListener("backbutton", onBackKeyDown, false);
 
     function onBackKeyDown() {
-        var activePage = $.mobile.pageContainer.pagecontainer("getActivePage");
-        if(activepage[0].id == "index") {
+        var activePage = $.mobile.activePage[0].id;
+        console.log(activePage);
+        if(activepage == "index") {
             navigator.app.exitApp();
         }
     }
@@ -163,7 +164,7 @@ $(document).ready( function() {
         alert("swipeleft");
         curId = parseInt($(".activity-content").attr("id"));
         // for (var i = 0; i < activityArray.length; i++) {
-            if (activityArray[curId+1]) {
+            if (activityArray[curId+1] !== undefined) {
                 alert('left if');
                 $(".activity-content").hide();
                 $(".activity-content").attr("id", curId +1);
@@ -179,7 +180,7 @@ $(document).ready( function() {
         alert("swiperight");
         curId = parseInt($(".activity-content").attr("id"));
         // for (var i = 0; i < activityArray.length; i++) {
-            if (activityArray[curId-1]) {
+            if (activityArray[curId-1]!== undefined) {
                 alert("right if");
                 $(".activity-content").hide();
                 $(".activity-content").attr("id", curId -1);
