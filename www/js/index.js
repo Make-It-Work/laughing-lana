@@ -445,7 +445,7 @@ function buildDetailPage(item) {
             var jsonData = result.result;
             $('#place-name').text(jsonData['name']);
             $('#place-address').text(jsonData.vicinity);
-            var number = jsonData.international_phone_number.replace(" ", "");
+            var number = jsonData.international_phone_number.replace(/ /g, "");
             var phoneHtml = '<a href=tel:"' + number + '"> ' + number + " </a>"
             $('#place-phone').html(phoneHtml);
             $('#place-rating').text(jsonData.rating);
