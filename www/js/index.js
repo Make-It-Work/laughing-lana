@@ -77,7 +77,6 @@ $(document).ready( function() {
 
     function onBackKeyDown() {
         var activePage = $(':mobile-pagecontainer').pagecontainer( 'getActivePage' ).attr( 'id' );
-        console.log(activePage);
         if(activePage == "index") {
             navigator.app.exitApp();
         }
@@ -160,12 +159,10 @@ $(document).ready( function() {
     });
 
     $(".activity-content").on("swipeleft", function() {
-        alert("swipeleft");
         curId = parseInt($(".activity-content").attr("id"));
         // for (var i = 0; i < activityArray.length; i++) {
             var activityArray = JSON.parse(window.localStorage.getItem("currentRaceActivities"));
             if (activityArray[curId+1] !== undefined) {
-                alert('left if');
                 $(".activity-content").hide();
                 $(".activity-content").attr("id", curId +1);
                 $("#activity-place-name").text(activityArray[curId +1].PlaceName); 
@@ -182,7 +179,6 @@ $(document).ready( function() {
         // for (var i = 0; i < activityArray.length; i++) {
             var activityArray = JSON.parse(window.localStorage.getItem("currentRaceActivities"));
             if (activityArray[curId-1]!== undefined) {
-                alert("right if");
                 $(".activity-content").hide();
                 $(".activity-content").attr("id", curId -1);
                 $("#activity-place-name").text(activityArray[curId -1].PlaceName); 
@@ -220,12 +216,23 @@ $(document).ready( function() {
         $(":mobile-pagecontainer" ).pagecontainer( "change", "#edit-race");
         return false;
     });
+    $('.leave-race').click(function() {
+        var race_id = $(this).attr("id");
+        var user_id = window.localStorage.getItem("userId");
+        $.ajax({
+            url: "http://restrace-api.herokuapp.com/race/" + race_id + "/user/" + user_id,
+            type: "DELETE",
+            dataType: "json",
+            success: function() {
+                alert("You left the race");
+            }
+        });
+        $(":mobile-pagecontainer" ).pagecontainer( "change", "#all-races");
+    });
     $('.delete-race').click(function() {
         var id = $('#delete-race-id').html();
-        alert(id);
         var url = "http://restrace-api.herokuapp.com/race/";
         var requestUrl = url.concat(id);
-        alert(requestUrl);
         $.ajax({
             url: requestUrl,
             type:'DELETE',
@@ -245,7 +252,6 @@ $(document).ready( function() {
     });
     
     $('.add-place-to-race').click(function (event) {
-        alert('clicked');
         var activityAdd = postActivityRequest($(this).attr("id"));
         if (activityAdd !== false) {
             var url = "http://restrace-api.herokuapp.com/race/" + JSON.parse(window.localStorage.getItem("currentRace"))._id + '/activity/' + activityAdd;
@@ -343,23 +349,13 @@ function fillLocalRaceStorage(race_id) {
                     type: "GET",
                     dataType: "json", 
                     success: function (response) {
-                        console.log("in success");
                         currentActivity.PlaceName = response[1].result.name;
                         currentActivity.PlaceAdress = response[1].result.vicinity;
                         activities.push(currentActivity);
-                        console.log("curAct: " + currentActivity);
-                    },
-                    error: function(request, status, error) {
-                        console.log("fail: " + error);
-                    },
-                    complete: function (jqXHR) {
-                        console.log(jqXHR);
-                        console.log("complete");
                     },
                     async: false
                 });
             });
-            console.log("acts: " + activities);
             window.localStorage.setItem("currentRaceActivities", JSON.stringify(activities));
             $(window).trigger("raceDetailInitialized");
         }
@@ -389,12 +385,20 @@ $(document).on("pagebeforeshow", "#race-detail", function() {
     var currentRace = JSON.parse(window.localStorage.getItem("currentRace"));
     var race_id = currentRace._id;
     var users = JSON.parse(window.localStorage.getItem("currentRaceUsers"));
+    var joinedRace = false;
+    $.each(users, function() {
+        if(this._id == window.localStorage.getItem("userId")) {
+            joinedRace = true;
+            return false;
+        }
+    });
+    console.log(users);
     if (currentRace.owner == window.localStorage.getItem("userId")) {
         $(".edit-race").show();
         $(".edit-race").attr("id", race_id);
         $(".delete-race").show();
         $("#delete-race-id").html(race_id);
-    } else if($.inArray(window.localStorage.getItem("userId"), users) >= 0) {
+    } else if(joinedRace) {
         $(".leave-race").show();
         $(".leave-race").attr("id", race_id);
     } else {
@@ -416,7 +420,6 @@ $(document).on("pagebeforeshow", "#race-detail", function() {
     $(".activity-content").attr("id", 0);
     // $(window).on("raceDetailInitialized",function(){
         var activityArray = JSON.parse(window.localStorage.getItem("currentRaceActivities"));
-        console.log(activityArray);
         $("#activity-place-name").text(activityArray[0].PlaceName); 
         $("#activity-place-adress").text(activityArray[0].PlaceAdress);
         $("#activity-description").text(activityArray[0].description);
@@ -433,15 +436,12 @@ $(document).on("pagebeforeshow", '#edit-race', function() {
 });
 
 $(document).on("pagebeforeshow", "#add-activity", function() {
-    alert("pagebeforeshow");
     navigator.geolocation.getCurrentPosition(
         function(position) {
             $("#activity-loader").show();
-            alert(position.coords.latitude + ',' + position.coords.longitude);
             var reqUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyAUxO0NYgx05X4imuydcq4iKr2kGtWjIZI&location=";
             reqUrl += position.coords.latitude + ',' + position.coords.longitude;
             reqUrl += "&radius=7500&type=cafe";
-            alert(reqUrl);
             $.ajax({
                 url: reqUrl,
                 type:'GET',
@@ -514,7 +514,6 @@ $('#place-website').click(function(event) {
 });
 
 function postActivityRequest(place_id) {
-    alert("gonna post");
     var reqData = JSON.stringify({
         google_id: place_id,
         description: $("#add-activity-description").val()
@@ -531,11 +530,9 @@ function postActivityRequest(place_id) {
         },
         success: function(response) {
             if(response.message !== undefined && response.message === 'Validation failed') {
-                alert('in error');
                 var reqUrl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + place_id + "&key=AIzaSyAUxO0NYgx05X4imuydcq4iKr2kGtWjIZI";
                 var place;
                 $.get(reqUrl, function(placeResponse) {
-                    alert('found place');
                     place = {
                         google_id: place_id,
                         name: placeResponse.result.name,
@@ -557,7 +554,6 @@ function postActivityRequest(place_id) {
                         },
                         
                         success: function(response) {
-                            alert("created place, retrying");
                             postActivityRequest(place_id);
                         },
                         error: function(res) {
@@ -566,7 +562,6 @@ function postActivityRequest(place_id) {
                     });
                 });
             } else {
-                alert("place gevonden");
                 //Vind het ID in de string die in de response.msg staat.
                 var responseString = response.msg;
                 var splitString = responseString.split("id");
@@ -581,9 +576,6 @@ function postActivityRequest(place_id) {
             alert("something went wrong");
             console.log(error);
             return false;
-        },
-        complete: function (jqXHR, textStatus) {
-            alert('executed request');
         }
     });
 }
