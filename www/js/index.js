@@ -48,13 +48,6 @@
 //     }
 // };
 
-$( document ).on( "mobileinit", function() {
-    // Make your jQuery Mobile framework configuration changes here!
-    alert("initing");
-    $.support.cors = true;
-    $.mobile.allowCrossDomainPages = true;
-});
-
 function handleLogin(user, pwd) {
     var form = $("#loginForm");
     //disable the button so we can't resubmit while we wait
