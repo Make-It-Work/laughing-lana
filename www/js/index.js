@@ -560,8 +560,11 @@ function postActivityRequest(place_id) {
             $.post(url, {}, function(res) {
                 if (res.message === "Validation failed") {
                     alert("Kan geen activity toevoegen als de race al begonnen is.");
+                } else {
+                    var activities = JSON.parse(window.localStorage.getItem("currentRaceActivities"));
+                    console.log(activities);
                 }
-                $( ":mobile-pagecontainer" ).pagecontainer("change", "#add-activity");
+
             }, 'json');
         },
         error: function(request, status, error) {
