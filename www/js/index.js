@@ -556,7 +556,11 @@ function postActivityRequest(place_id) {
             var splitString = responseString.split("id");
             var activity_id = splitString[1].slice(0, splitString[1].indexOf(" "));
             var url = "http://restrace-api.herokuapp.com/race/" + JSON.parse(window.localStorage.getItem("currentRace"))._id + '/activity/' + activity_id;
-            $.post(url, {}, function() {
+            alert(url);
+            $.post(url, {}, function(res) {
+                if (res.message === "Validation failed") {
+                    alert("Kan geen activity toevoegen als de race al begonnen is.");
+                }
                 $( ":mobile-pagecontainer" ).pagecontainer("change", "#add-activity");
             }, 'json');
         },
