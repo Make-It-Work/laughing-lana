@@ -60,7 +60,7 @@ function handleLogin(user, pwd) {
                 window.localStorage.setItem("username", user);
                 window.localStorage.setItem("password",  pwd);
                 window.localStorage.setItem("userId", res._id);
-                $( ":mobile-pagecontainer" ).pagecontainer( "change", "#index");
+                $( ":mobile-pagecontainer" ).pagecontainer( "change", "#all-races");
             } else {
                 alert("Your login failed");
             }
@@ -77,7 +77,7 @@ $(document).ready( function() {
 
     function onBackKeyDown() {
         var activePage = $(':mobile-pagecontainer').pagecontainer( 'getActivePage' ).attr( 'id' );
-        if(activePage == "index") {
+        if(activePage == "all-races") {
             navigator.app.exitApp();
         }
     }
@@ -113,7 +113,7 @@ $(document).ready( function() {
             endDateTime: $('#raceendtime').val()
         }, function(res) {
             if(res.msg.indexOf("succesfully") >= 0) {
-                $( ":mobile-pagecontainer" ).pagecontainer( "change", "#index");
+                $( ":mobile-pagecontainer" ).pagecontainer( "change", "#all-races");
             } else {
                 alert("Adding this race failed");
             }
@@ -206,7 +206,7 @@ $(document).ready( function() {
             url: url,
             success: function(msg) {
                 alert("You've joined the race, good luck!");
-                $( ":mobile-pagecontainer" ).pagecontainer( "change", "#index");
+                $( ":mobile-pagecontainer" ).pagecontainer( "change", "#all-races");
                 $("joinrace-loader").hide();
             },
             error: function(res) {
@@ -409,7 +409,7 @@ $(document).on("pagebeforeshow", "div[data-role='page']:not(div[id='loginPage'])
 });
 $(document).on("pagebeforeshow", "#loginPage", function() {
     if(window.localStorage.getItem("username") !== null) {
-        $( ":mobile-pagecontainer" ).pagecontainer( "change", "#index");
+        $( ":mobile-pagecontainer" ).pagecontainer( "change", "#all-races");
     } else {
         return false;
     }
