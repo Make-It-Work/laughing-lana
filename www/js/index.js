@@ -168,7 +168,7 @@ $(document).ready( function() {
                 $("#activity-place-name").text(activityArray[curId +1].PlaceName); 
                 $("#activity-place-adress").text(activityArray[curId+1].PlaceAdress);
                 $("#activity-description").text(activityArray[curId +1].description);
-                $(".tag").attr("id", activityArray[curId + 1].activity_id);
+                $("#tag").attr("id", curId + 1);
                 $('.activity-content').fadeIn(400);
                 return;
             }
@@ -184,7 +184,7 @@ $(document).ready( function() {
                 $("#activity-place-name").text(activityArray[curId -1].PlaceName); 
                 $("#activity-place-adress").text(activityArray[curId-1].PlaceAdress);
                 $("#activity-description").text(activityArray[curId -1].description);
-                $(".tag").attr("id", activityArray[curId - 1].activity_id);
+                $("#tag").attr("id", curId - 1);
                 $('.activity-content').fadeIn(400);
                 return;
             }
@@ -252,17 +252,6 @@ $(document).ready( function() {
         });
     });
     
-    $('.tag').click(function(event) {
-        var activityId = $(event.target).closest('.tag').attr("id");
-        ar url = "http://restrace-api.herokuapp.com/activity/" + activityId + "/tag";
-        $.post(url, {
-            user_id: window.localStorage.getItem("userId"),
-            dateTime: new Date()
-        }, function () {
-            alert("Your tag was saved");
-        });
-    })
-
     $('.add-place-to-race').click(function (event) {
         var activityAdd = postActivityRequest($(this).attr("id"));
         if (activityAdd !== false) {
@@ -369,7 +358,6 @@ function fillLocalRaceStorage(race_id) {
                         type: "GET",
                         dataType: "json", 
                         success: function (response) {
-                            currentActivity.activity_id = response[0]._id;
                             currentActivity.PlaceName = response[1].result.name;
                             currentActivity.PlaceAdress = response[1].result.vicinity;
                             activities.push(currentActivity);
