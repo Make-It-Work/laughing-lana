@@ -134,13 +134,15 @@ $(document).ready( function() {
         $.ajax({
             url: requestUrl,
             type:'PUT',
-            data: {
+            data: JSON.stringify({
                 name: $('#editracename').val(),
                 description: $('#editracedescription').val(),
                 owner: window.localStorage.getItem("userId"),
                 startDateTime: $('#editracestarttime').val(),
                 endDateTime: $('#editraceendtime').val()
-            },
+            }),
+            dataType: 'json',
+            contentType: 'application/json',
             success: function(res) {
                 if(res.indexOf("succesfully") >= 0) {
                     $( ":mobile-pagecontainer" ).pagecontainer("change", "#all-races");
