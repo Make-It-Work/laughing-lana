@@ -474,7 +474,7 @@ $(document).on("pagebeforeshow", "#add-activity", function() {
         function(position) {
             alert("got position");
             $("#activity-loader").show();
-            var reqUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyD9_sdUtB7HA7BMx53m6uX45kN55zrbn9k&location=";
+            var reqUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyAB3wNP3s9QgUApH-OTx4BZw01xLgeqmcE&location=";
             reqUrl += position.coords.latitude + ',' + position.coords.longitude;
             reqUrl += "&radius=7500&type=cafe";
             $.ajax({
@@ -524,7 +524,7 @@ function buildDetailPage() {
 }
 
 function fillDetailPageLocalStorage(place_id) {
-    var reqUrl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + place_id + "&key=AIzaSyD9_sdUtB7HA7BMx53m6uX45kN55zrbn9k";
+    var reqUrl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + place_id + "&key=AIzaSyAB3wNP3s9QgUApH-OTx4BZw01xLgeqmcE";
     $.ajax({
         url: reqUrl,
         type:'GET',
@@ -581,7 +581,7 @@ function postActivityRequest(place_id) {
         },
         error: function(request, status, error) {
             if(request.responseText === 'There is something wrong with the paramsValidationError: Invalid place id') {
-                var reqUrl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + place_id + "&key=AIzaSyD9_sdUtB7HA7BMx53m6uX45kN55zrbn9k";
+                var reqUrl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + place_id + "&key=AIzaSyAB3wNP3s9QgUApH-OTx4BZw01xLgeqmcE";
                 var place;
                 $.get(reqUrl, function(placeResponse) {
                     place = {
