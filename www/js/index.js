@@ -393,6 +393,7 @@ $(document).on("pagebeforeshow", "#race-detail", function() {
         $(".edit-race").hide();
         $(".join-race").hide();
         $(".leave-race").hide();
+        $('.delete-race').hide();
         var currentRace = JSON.parse(window.localStorage.getItem("currentRace"));
         var race_id = currentRace._id;
         var users = JSON.parse(window.localStorage.getItem("currentRaceUsers"));
@@ -438,9 +439,11 @@ $(document).on("pagebeforeshow", "#race-detail", function() {
         $(".activity-content").attr("id", 0);
     
         var activityArray = JSON.parse(window.localStorage.getItem("currentRaceActivities"));
-        $("#activity-place-name").text(activityArray[0].PlaceName); 
-        $("#activity-place-adress").text(activityArray[0].PlaceAdress);
-        $("#activity-description").text(activityArray[0].description);
+        if (activityArray.length > 0) {
+            $("#activity-place-name").text(activityArray[0].PlaceName); 
+            $("#activity-place-adress").text(activityArray[0].PlaceAdress);
+            $("#activity-description").text(activityArray[0].description);
+        }
     });
 });
 $(document).on("pagebeforeshow", '#edit-race', function() {
@@ -479,6 +482,7 @@ $(document).on("pagebeforeshow", "#add-activity", function() {
                     });
                 },
                 error: function(request, status, error) {
+                    console.log(status + " " + error);
                 }
             });
     
@@ -533,21 +537,28 @@ $('#place-website').click(function(event) {
 
 function postActivityRequest(place_id) {
     var reqData = JSON.stringify({
-        google_id: place_id,
-        description: $("#add-activity-description").val()
+        "google_id": place_id,
+        "description": $("#add-activity-description").val()
     });
+    console.log(reqData);
     $.ajax({
         type:"POST",
         url: "http://restrace-api.herokuapp.com/activity",
         data: reqData,
-        contentType: "application/json; charset=utf-8",
+        contentType: "application/json",
         dataType: 'json',
-        beforeSend: function (request)
-        {
-            request.setRequestHeader("Content-Type", "application/json");
-        },
         success: function(response) {
-            if(response.message !== undefined && response.message === 'Validation failed') {
+                //Vind het ID in de string die in de response.msg staat.
+            var responseString = response.msg;
+            var splitString = responseString.split("id");
+            var activity_id = splitString[1].slice(0, splitString[1].indexOf(" "));
+            var url = "http://restrace-api.herokuapp.com/race/" + JSON.parse(window.localStorage.getItem("currentRace"))._id + '/activity/' + activity_id;
+            $.post(url, {}, function() {
+                $( ":mobile-pagecontainer" ).pagecontainer("change", "#add-activity");
+            }, 'json');
+        },
+        error: function(request, status, error) {
+            if(request.responseText === 'There is something wrong with the paramsValidationError: Invalid place id') {
                 var reqUrl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + place_id + "&key=AIzaSyAUxO0NYgx05X4imuydcq4iKr2kGtWjIZI";
                 var place;
                 $.get(reqUrl, function(placeResponse) {
@@ -559,7 +570,7 @@ function postActivityRequest(place_id) {
                             lat: placeResponse.result.geometry.location.lat,
                             lng: placeResponse.result.geometry.location.lng
                         }
-                    }
+                    };
                     $.ajax({
                         type:"POST",
                         url: "http://restrace-api.herokuapp.com/place",
@@ -579,20 +590,7 @@ function postActivityRequest(place_id) {
                         }
                     });
                 });
-            } else {
-                //Vind het ID in de string die in de response.msg staat.
-                var responseString = response.msg;
-                var splitString = responseString.split("id");
-                var activity_id = splitString[1].slice(0, splitString[1].indexOf(" "));
-                var url = "http://restrace-api.herokuapp.com/race/" + JSON.parse(window.localStorage.getItem("currentRace"))._id + '/activity/' + activity_id;
-                $.post(url, {}, function() {
-                    $( ":mobile-pagecontainer" ).pagecontainer("change", "#add-activity");
-                }, 'json');
-            }
-        },
-        error: function(request, status, error) {
-            alert("something went wrong");
-            console.log(error);
+            } 
             return false;
         }
     });
