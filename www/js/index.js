@@ -168,13 +168,13 @@ $(document).ready( function() {
                 $("#activity-place-name").text(activityArray[curId +1].PlaceName); 
                 $("#activity-place-adress").text(activityArray[curId+1].PlaceAdress);
                 $("#activity-description").text(activityArray[curId +1].description);
+                $("#tag").attr("id", curId + 1);
                 $('.activity-content').fadeIn(400);
                 return;
             }
         // }
     });
     $(".activity-content").on("swiperight", function() {
-        alert("swiperight");
         curId = parseInt($(".activity-content").attr("id"));
         // for (var i = 0; i < activityArray.length; i++) {
             var activityArray = JSON.parse(window.localStorage.getItem("currentRaceActivities"));
@@ -184,6 +184,7 @@ $(document).ready( function() {
                 $("#activity-place-name").text(activityArray[curId -1].PlaceName); 
                 $("#activity-place-adress").text(activityArray[curId-1].PlaceAdress);
                 $("#activity-description").text(activityArray[curId -1].description);
+                $("#tag").attr("id", curId - 1);
                 $('.activity-content').fadeIn(400);
                 return;
             }
