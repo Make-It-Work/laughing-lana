@@ -162,6 +162,7 @@ $(document).ready( function() {
         curId = parseInt($(".activity-content").attr("id"));
         // for (var i = 0; i < activityArray.length; i++) {
             var activityArray = JSON.parse(window.localStorage.getItem("currentRaceActivities"));
+            console.log(activityArray);
             if (activityArray[curId+1] !== undefined) {
                 $(".activity-content").hide();
                 $(".activity-content").attr("id", curId +1);
@@ -254,12 +255,23 @@ $(document).ready( function() {
     
     $('.tag').click(function(event) {
         var activityId = $(event.target).closest('.tag').attr("id");
-        ar url = "http://restrace-api.herokuapp.com/activity/" + activityId + "/tag";
-        $.post(url, {
-            user_id: window.localStorage.getItem("userId"),
-            dateTime: new Date()
-        }, function () {
-            alert("Your tag was saved");
+        var reqUrl = "http://restrace-api.herokuapp.com/activity/" + activityId + "/tag";
+        $.ajax({
+            type:"POST",
+            url: reqUrl,
+            data: JSON.stringify({user_id: window.localStorage.getItem("userId")}),
+            contentType: "application/json; charset=utf-8",
+            dataType: 'json',                        
+            beforeSend: function (request)
+            {
+                request.setRequestHeader("Content-Type", "application/json");
+            },
+            complete: function(jqXHR, textStatus) {
+                if(jqXHR.status === 200) {
+                    alert("Your tag was saved");
+                }
+                $(":mobile-pagecontainer" ).pagecontainer( "change", "#all-races");
+            }
         });
     })
 
@@ -416,7 +428,7 @@ $(document).on("pagebeforeshow", "#race-detail", function() {
                 return false;
             }
         });
-        console.log(users);
+        console.log("users: " + users);
         if (currentRace.owner == window.localStorage.getItem("userId")) {
             $(".edit-race").show();
             $(".edit-race").attr("id", race_id);
@@ -455,6 +467,7 @@ $(document).on("pagebeforeshow", "#race-detail", function() {
             $("#activity-place-name").text(activityArray[0].PlaceName); 
             $("#activity-place-adress").text(activityArray[0].PlaceAdress);
             $("#activity-description").text(activityArray[0].description);
+            $(".tag").attr('id', activityArray[0].activity_id);
         }
     });
 });
