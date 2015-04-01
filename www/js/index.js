@@ -457,10 +457,12 @@ $(document).on("pagebeforeshow", '#edit-race', function() {
 });
 
 $(document).on("pagebeforeshow", "#add-activity", function() {
+    alert('finding location');
     navigator.geolocation.getCurrentPosition(
         function(position) {
+            alert("got position");
             $("#activity-loader").show();
-            var reqUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyAUxO0NYgx05X4imuydcq4iKr2kGtWjIZI&location=";
+            var reqUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyD9_sdUtB7HA7BMx53m6uX45kN55zrbn9k&location=";
             reqUrl += position.coords.latitude + ',' + position.coords.longitude;
             reqUrl += "&radius=7500&type=cafe";
             $.ajax({
@@ -468,6 +470,7 @@ $(document).on("pagebeforeshow", "#add-activity", function() {
                 type:'GET',
                 dataType: 'json',
                 success: function(result) {
+                    alert
                     $('#near-activities > ul').empty();
                     $.each(result.results, function() {
                         var html = '<li class="activity-list-item ui-li" id="' + this.place_id + '"><a>';
@@ -509,7 +512,7 @@ function buildDetailPage() {
 }
 
 function fillDetailPageLocalStorage(place_id) {
-    var reqUrl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + place_id + "&key=AIzaSyAUxO0NYgx05X4imuydcq4iKr2kGtWjIZI";
+    var reqUrl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + place_id + "&key=AIzaSyD9_sdUtB7HA7BMx53m6uX45kN55zrbn9k";
     $.ajax({
         url: reqUrl,
         type:'GET',
@@ -559,7 +562,7 @@ function postActivityRequest(place_id) {
         },
         error: function(request, status, error) {
             if(request.responseText === 'There is something wrong with the paramsValidationError: Invalid place id') {
-                var reqUrl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + place_id + "&key=AIzaSyAUxO0NYgx05X4imuydcq4iKr2kGtWjIZI";
+                var reqUrl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + place_id + "&key=AIzaSyD9_sdUtB7HA7BMx53m6uX45kN55zrbn9k";
                 var place;
                 $.get(reqUrl, function(placeResponse) {
                     place = {
