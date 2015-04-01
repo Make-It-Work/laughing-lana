@@ -82,7 +82,7 @@ $(document).ready( function() {
         }
     }
 
-    $('#logout').on("click", function(e) {
+    $('.logout').on("click", function(e) {
         window.localStorage.removeItem("username");
         window.localStorage.removeItem("password");
         window.localStorage.removeItem("userId");
